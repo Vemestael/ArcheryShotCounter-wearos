@@ -423,7 +423,11 @@ class MainActivity : ComponentActivity() {
                 val session = Session(id = now, startTime = now, lastShotTime = now, shotCount = shotCount, shotsPerEndAtStart = shotsPerEnd, lastModified = now)
                 currentSession = session
                 if (shotCount > 0) sessions.add(0, session)
-                dbExecutor.execute { database.sessionDao().insertOrUpdate(session) }
+                dbExecutor.execute {
+                    database.sessionDao().insertOrUpdate(session)
+                    syncSessionToPhone(session, database.shotDao().getBySession(session.id))
+                }
+                pushActiveSessionState(session.id)
                 startDetection()
             }
             autoPauseSecondsLeft >= 0 -> { cancelAutoPause(); startDetection(); shotDetector.resetCooldown() }
@@ -456,6 +460,15 @@ class MainActivity : ComponentActivity() {
         val request = PutDataMapRequest.create("/session/${session.id}").apply {
             dataMap.putString("json", buildSessionJson(session, shots))
             dataMap.putLong("syncedAt", System.currentTimeMillis())
+        }.asPutDataRequest().setUrgent()
+        Wearable.getDataClient(this).putDataItem(request)
+    }
+
+    /** Lets the phone show a session as still in progress before it's ended, mirroring the
+     * watch's own live History entry. Safe to call from the main thread. */
+    private fun pushActiveSessionState(sessionId: Long?) {
+        val request = PutDataMapRequest.create("/activeSession").apply {
+            dataMap.putLong("sessionId", sessionId ?: -1L)
         }.asPutDataRequest().setUrgent()
         Wearable.getDataClient(this).putDataItem(request)
     }
@@ -513,6 +526,7 @@ class MainActivity : ComponentActivity() {
         showClearDataConfirm = false
         cancelAutoPause()
         if (isDetecting) stopDetection()
+        if (currentSession != null) pushActiveSessionState(null)
         currentSession = null
         shotCount = 0
         clearPendingSession()
@@ -544,6 +558,7 @@ class MainActivity : ComponentActivity() {
             sessions.removeIf { it.id == session.id }
             dbExecutor.execute { database.sessionDao().delete(session) }
         }
+        pushActiveSessionState(null)
         currentSession = null
         shotCount = 0
         clearPendingSession()
@@ -559,6 +574,7 @@ class MainActivity : ComponentActivity() {
         dbExecutor.execute {
             database.sessionDao().insertOrUpdate(updated)
             database.shotDao().insert(Shot(sessionId = session.id, timestamp = now, magnitude = magnitude))
+            syncSessionToPhone(updated, database.shotDao().getBySession(updated.id))
         }
         if (shotsPerEnd > 0 && autoPauseEnabled && shotCount % shotsPerEnd == 0) {
             startAutoPause()
@@ -579,7 +595,9 @@ class MainActivity : ComponentActivity() {
                 dbExecutor.execute {
                     database.sessionDao().insertOrUpdate(session)
                     repeat(actualDelta) { database.shotDao().insert(Shot(sessionId = session.id, timestamp = now, magnitude = null)) }
+                    syncSessionToPhone(session, database.shotDao().getBySession(session.id))
                 }
+                pushActiveSessionState(session.id)
                 return
             }
             val session = currentSession!!
@@ -590,6 +608,7 @@ class MainActivity : ComponentActivity() {
             dbExecutor.execute {
                 database.sessionDao().insertOrUpdate(updated)
                 repeat(actualDelta) { database.shotDao().insert(Shot(sessionId = session.id, timestamp = now, magnitude = null)) }
+                syncSessionToPhone(updated, database.shotDao().getBySession(updated.id))
             }
         } else {
             val session = currentSession ?: return
@@ -601,6 +620,7 @@ class MainActivity : ComponentActivity() {
                 dbExecutor.execute {
                     database.sessionDao().insertOrUpdate(updated)
                     database.shotDao().deleteLatest(session.id, -actualDelta)
+                    syncSessionToPhone(updated, database.shotDao().getBySession(updated.id))
                 }
             }
         }
