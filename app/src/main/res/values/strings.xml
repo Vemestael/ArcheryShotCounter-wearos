@@ -40,6 +40,13 @@
     <string name="auto_pause_off">Auto-pause: Off</string>
     <string name="pause_duration_title">Pause duration</string>
 
+    <string name="power_saving_title">Energy efficiency</string>
+    <string name="power_saving_on">Energy efficiency: On</string>
+    <string name="power_saving_off">Energy efficiency: Off</string>
+    <string name="use_aod_on">Always On Display: On</string>
+    <string name="use_aod_off">Always On Display: Off</string>
+    <string name="dim_brightness_title">Dim brightness</string>
+
     <string name="btn_detail">Details</string>
     <string name="shots_empty">No data</string>
 

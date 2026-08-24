@@ -34,6 +34,14 @@
     <string name="auto_pause_on">Otomatik duraklama: Açık</string>
     <string name="auto_pause_off">Otomatik duraklama: Kapalı</string>
     <string name="pause_duration_title">Duraklama süresi</string>
+
+    <string name="power_saving_title">Enerji verimliliği</string>
+    <string name="power_saving_on">Enerji verimliliği: Açık</string>
+    <string name="power_saving_off">Enerji verimliliği: Kapalı</string>
+    <string name="use_aod_on">Always On Display: Açık</string>
+    <string name="use_aod_off">Always On Display: Kapalı</string>
+    <string name="dim_brightness_title">Karartma parlaklığı</string>
+
     <string name="unit_accel">m/s²</string>
     <string name="time_h">s</string>
     <string name="time_m">dk</string>

@@ -34,6 +34,14 @@
     <string name="auto_pause_on">إيقاف تلقائي: تشغيل</string>
     <string name="auto_pause_off">إيقاف تلقائي: إيقاف</string>
     <string name="pause_duration_title">مدة الإيقاف المؤقت</string>
+
+    <string name="power_saving_title">كفاءة الطاقة</string>
+    <string name="power_saving_on">كفاءة الطاقة: تشغيل</string>
+    <string name="power_saving_off">كفاءة الطاقة: إيقاف</string>
+    <string name="use_aod_on">Always On Display: تشغيل</string>
+    <string name="use_aod_off">Always On Display: إيقاف</string>
+    <string name="dim_brightness_title">سطوع التعتيم</string>
+
     <string name="unit_accel">م/ث²</string>
     <string name="time_h">س</string>
     <string name="time_m">د</string>

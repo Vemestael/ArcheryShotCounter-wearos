@@ -34,6 +34,14 @@
     <string name="auto_pause_on">स्वतः विराम: चालू</string>
     <string name="auto_pause_off">स्वतः विराम: बंद</string>
     <string name="pause_duration_title">विराम अवधि</string>
+
+    <string name="power_saving_title">ऊर्जा दक्षता</string>
+    <string name="power_saving_on">ऊर्जा दक्षता: चालू</string>
+    <string name="power_saving_off">ऊर्जा दक्षता: बंद</string>
+    <string name="use_aod_on">Always On Display: चालू</string>
+    <string name="use_aod_off">Always On Display: बंद</string>
+    <string name="dim_brightness_title">मंद चमक</string>
+
     <string name="unit_accel">m/s²</string>
     <string name="time_h">घं</string>
     <string name="time_m">मि</string>

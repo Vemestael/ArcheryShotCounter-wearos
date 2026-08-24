@@ -34,6 +34,14 @@
     <string name="auto_pause_on">Auto-Pause: Ein</string>
     <string name="auto_pause_off">Auto-Pause: Aus</string>
     <string name="pause_duration_title">Pausendauer</string>
+
+    <string name="power_saving_title">Energieeffizienz</string>
+    <string name="power_saving_on">Energieeffizienz: Ein</string>
+    <string name="power_saving_off">Energieeffizienz: Aus</string>
+    <string name="use_aod_on">Always On Display: Ein</string>
+    <string name="use_aod_off">Always On Display: Aus</string>
+    <string name="dim_brightness_title">Dimm-Helligkeit</string>
+
     <string name="unit_accel">m/s²</string>
     <string name="time_h">Std</string>
     <string name="time_m">Min</string>

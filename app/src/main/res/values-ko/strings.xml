@@ -34,6 +34,14 @@
     <string name="auto_pause_on">자동 일시정지: 켜기</string>
     <string name="auto_pause_off">자동 일시정지: 끄기</string>
     <string name="pause_duration_title">일시정지 시간</string>
+
+    <string name="power_saving_title">절전</string>
+    <string name="power_saving_on">절전: 켜기</string>
+    <string name="power_saving_off">절전: 끄기</string>
+    <string name="use_aod_on">Always On Display: 켜기</string>
+    <string name="use_aod_off">Always On Display: 끄기</string>
+    <string name="dim_brightness_title">어둡게 할 밝기</string>
+
     <string name="unit_accel">m/s²</string>
     <string name="time_h">시간</string>
     <string name="time_m">분</string>

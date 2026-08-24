@@ -16,6 +16,8 @@ import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -27,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.core.content.edit
 import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.wear.compose.foundation.pager.HorizontalPager
@@ -54,7 +58,11 @@ private const val KEY_SHOTS_PER_END = "shots_per_end"
 private const val KEY_AUTO_PAUSE_ENABLED = "auto_pause_enabled"
 private const val KEY_AUTO_PAUSE_DURATION = "auto_pause_duration"
 private const val KEY_AOD_PROMPT_DISMISSED = "aod_prompt_dismissed"
-private const val DIM_SCREEN_BRIGHTNESS = 0.08f
+private const val KEY_POWER_SAVING_ENABLED = "power_saving_enabled"
+private const val KEY_USE_SYSTEM_AOD = "use_system_aod"
+private const val KEY_DIM_BRIGHTNESS_PERCENT = "dim_brightness_percent"
+private const val DEFAULT_DIM_BRIGHTNESS_PERCENT = 8
+private const val TAP_BRIGHTEN_DURATION_MS = 5000L
 
 /**
  * Whether the system's Always On Display / ambient mode is available to fall back on.
@@ -112,6 +120,13 @@ class MainActivity : ComponentActivity() {
     private var ambientAvailability = AmbientAvailability.UNKNOWN
     private var showAodPrompt by mutableStateOf(false)
 
+    private var powerSavingEnabled by mutableStateOf(true)
+    private var useSystemAod by mutableStateOf(true)
+    private var dimBrightnessPercent by mutableIntStateOf(DEFAULT_DIM_BRIGHTNESS_PERCENT)
+    private var isScreenDimmed = false
+    private val brightenHandler = Handler(Looper.getMainLooper())
+    private val reDimRunnable = Runnable { dimScreenBrightness() }
+
     override fun attachBaseContext(newBase: Context) {
         val code = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
             .getString(KEY_LANGUAGE, AppLanguage.SYSTEM.code) ?: AppLanguage.SYSTEM.code
@@ -146,7 +161,7 @@ class MainActivity : ComponentActivity() {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        shotDetector = ShotDetector(sensorManager) { magnitude ->
+        shotDetector = ShotDetector(applicationContext, sensorManager) { magnitude ->
             runOnUiThread {
                 shotCount++
                 lastShotMagnitude = magnitude
@@ -168,6 +183,9 @@ class MainActivity : ComponentActivity() {
         shotsPerEnd = prefs.getInt(KEY_SHOTS_PER_END, 0)
         autoPauseEnabled = prefs.getBoolean(KEY_AUTO_PAUSE_ENABLED, false)
         autoPauseDuration = prefs.getInt(KEY_AUTO_PAUSE_DURATION, 60)
+        powerSavingEnabled = prefs.getBoolean(KEY_POWER_SAVING_ENABLED, true)
+        useSystemAod = prefs.getBoolean(KEY_USE_SYSTEM_AOD, true)
+        dimBrightnessPercent = prefs.getInt(KEY_DIM_BRIGHTNESS_PERCENT, DEFAULT_DIM_BRIGHTNESS_PERCENT)
 
         ambientAvailability = detectAmbientAvailability()
         showAodPrompt = ambientAvailability == AmbientAvailability.DISABLED &&
@@ -210,10 +228,14 @@ class MainActivity : ComponentActivity() {
                     shotsPerEnd = shotsPerEnd,
                     autoPauseEnabled = autoPauseEnabled,
                     autoPauseDuration = autoPauseDuration,
+                    powerSavingEnabled = powerSavingEnabled,
+                    useSystemAod = useSystemAod,
+                    dimBrightnessPercent = dimBrightnessPercent,
                     autoPauseSecondsLeft = autoPauseSecondsLeft,
                     lastShotMagnitude = lastShotMagnitude,
                     phoneSyncStatus = phoneSyncStatus,
                     onSyncData = ::syncData,
+                    onScreenTap = ::onScreenTapped,
                     showClearDataConfirm = showClearDataConfirm,
                     onClearData = ::startClearData,
                     onConfirmClearData = ::confirmClearData,
@@ -272,6 +294,24 @@ class MainActivity : ComponentActivity() {
                         autoPauseDuration = value
                         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                             .edit { putInt(KEY_AUTO_PAUSE_DURATION, value) }
+                    },
+                    onPowerSavingEnabledChange = { enabled ->
+                        powerSavingEnabled = enabled
+                        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            .edit { putBoolean(KEY_POWER_SAVING_ENABLED, enabled) }
+                        if (isDetecting || autoPauseSecondsLeft >= 0) applyScreenPowerMode()
+                    },
+                    onUseSystemAodChange = { enabled ->
+                        useSystemAod = enabled
+                        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            .edit { putBoolean(KEY_USE_SYSTEM_AOD, enabled) }
+                        if (isDetecting || autoPauseSecondsLeft >= 0) applyScreenPowerMode()
+                    },
+                    onDimBrightnessPercentChange = { value ->
+                        dimBrightnessPercent = value
+                        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            .edit { putInt(KEY_DIM_BRIGHTNESS_PERCENT, value) }
+                        if (isScreenDimmed) dimScreenBrightness()
                     }
                 )
             }
@@ -284,6 +324,8 @@ class MainActivity : ComponentActivity() {
             if (value != 0) AmbientAvailability.ENABLED else AmbientAvailability.DISABLED
         } catch (e: Settings.SettingNotFoundException) {
             AmbientAvailability.UNKNOWN
+        } catch (e: SecurityException) {
+            AmbientAvailability.UNKNOWN
         }
 
     private fun dismissAodPrompt(openSettings: Boolean) {
@@ -292,17 +334,42 @@ class MainActivity : ComponentActivity() {
         if (openSettings) startActivity(Intent(Settings.ACTION_DISPLAY_SETTINGS))
     }
 
-    /** Forces a dimmed always-on screen when the system doesn't offer working Ambient Mode. */
+    /** Forces a dimmed always-on screen when energy efficiency is on and the system doesn't
+     * offer (or the user opted out of) working Ambient Mode. */
     private fun applyScreenPowerMode() {
-        if (ambientAvailability == AmbientAvailability.ENABLED) return
+        brightenHandler.removeCallbacks(reDimRunnable)
+        if (!powerSavingEnabled) {
+            isScreenDimmed = false
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            window.attributes = window.attributes.also { it.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE }
+            return
+        }
+        if (useSystemAod && ambientAvailability == AmbientAvailability.ENABLED) {
+            isScreenDimmed = false
+            return
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        window.attributes = window.attributes.also { it.screenBrightness = DIM_SCREEN_BRIGHTNESS }
+        dimScreenBrightness()
+    }
+
+    private fun dimScreenBrightness() {
+        isScreenDimmed = true
+        window.attributes = window.attributes.also { it.screenBrightness = dimBrightnessPercent / 100f }
     }
 
     private fun clearScreenPowerMode() {
-        if (ambientAvailability == AmbientAvailability.ENABLED) return
+        isScreenDimmed = false
+        brightenHandler.removeCallbacks(reDimRunnable)
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.attributes = window.attributes.also { it.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE }
+    }
+
+    /** Tapping the dimmed screen restores full brightness briefly so the wearer can read it. */
+    private fun onScreenTapped() {
+        if (!isScreenDimmed) return
+        window.attributes = window.attributes.also { it.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE }
+        brightenHandler.removeCallbacks(reDimRunnable)
+        brightenHandler.postDelayed(reDimRunnable, TAP_BRIGHTEN_DURATION_MS)
     }
 
     private fun startAutoPause() {
@@ -614,6 +681,7 @@ class MainActivity : ComponentActivity() {
         cancelAutoPause()
         magnitudeHandler.removeCallbacks(magnitudeHideRunnable)
         phoneSyncStatusHandler.removeCallbacks(phoneSyncStatusHideRunnable)
+        brightenHandler.removeCallbacks(reDimRunnable)
         shotDetector.stop()
         dbExecutor.shutdown()
     }
@@ -633,10 +701,14 @@ fun ArcheryApp(
     shotsPerEnd: Int,
     autoPauseEnabled: Boolean,
     autoPauseDuration: Int,
+    powerSavingEnabled: Boolean,
+    useSystemAod: Boolean,
+    dimBrightnessPercent: Int,
     autoPauseSecondsLeft: Int,
     lastShotMagnitude: Float?,
     phoneSyncStatus: String?,
     onSyncData: () -> Unit,
+    onScreenTap: () -> Unit,
     showClearDataConfirm: Boolean,
     onClearData: () -> Unit,
     onConfirmClearData: () -> Unit,
@@ -657,6 +729,9 @@ fun ArcheryApp(
     onShotsPerEndChange: (Int) -> Unit,
     onAutoPauseEnabledChange: (Boolean) -> Unit,
     onAutoPauseDurationChange: (Int) -> Unit,
+    onPowerSavingEnabledChange: (Boolean) -> Unit,
+    onUseSystemAodChange: (Boolean) -> Unit,
+    onDimBrightnessPercentChange: (Int) -> Unit,
     detailSession: Session?,
     detailShots: List<Shot>,
     onShowDetail: (Session) -> Unit,
@@ -673,7 +748,16 @@ fun ArcheryApp(
             )
             return@AppScaffold
         }
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(onScreenTap) {
+                    awaitEachGesture {
+                        awaitFirstDown(pass = PointerEventPass.Initial)
+                        onScreenTap()
+                    }
+                }
+        ) {
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> HistoryScreen(
@@ -705,6 +789,9 @@ fun ArcheryApp(
                         shotsPerEnd = shotsPerEnd,
                         autoPauseEnabled = autoPauseEnabled,
                         autoPauseDuration = autoPauseDuration,
+                        powerSavingEnabled = powerSavingEnabled,
+                        useSystemAod = useSystemAod,
+                        dimBrightnessPercent = dimBrightnessPercent,
                         onSensitivityChange = onSensitivityChange,
                         onCustomThresholdChange = onCustomThresholdChange,
                         onShowLanguagePicker = { showLanguagePicker = true },
@@ -712,6 +799,9 @@ fun ArcheryApp(
                         onShotsPerEndChange = onShotsPerEndChange,
                         onAutoPauseEnabledChange = onAutoPauseEnabledChange,
                         onAutoPauseDurationChange = onAutoPauseDurationChange,
+                        onPowerSavingEnabledChange = onPowerSavingEnabledChange,
+                        onUseSystemAodChange = onUseSystemAodChange,
+                        onDimBrightnessPercentChange = onDimBrightnessPercentChange,
                         phoneSyncStatus = phoneSyncStatus,
                         onSyncData = onSyncData,
                         onClearData = onClearData

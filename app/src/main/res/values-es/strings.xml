@@ -34,6 +34,14 @@
     <string name="auto_pause_on">Pausa automática: Activado</string>
     <string name="auto_pause_off">Pausa automática: Desactivado</string>
     <string name="pause_duration_title">Duración de pausa</string>
+
+    <string name="power_saving_title">Eficiencia energética</string>
+    <string name="power_saving_on">Eficiencia energética: Activado</string>
+    <string name="power_saving_off">Eficiencia energética: Desactivado</string>
+    <string name="use_aod_on">Always On Display: Activado</string>
+    <string name="use_aod_off">Always On Display: Desactivado</string>
+    <string name="dim_brightness_title">Brillo atenuado</string>
+
     <string name="unit_accel">m/s²</string>
     <string name="time_h">h</string>
     <string name="time_m">min</string>

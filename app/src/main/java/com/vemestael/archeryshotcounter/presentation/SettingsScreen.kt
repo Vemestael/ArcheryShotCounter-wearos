@@ -57,6 +57,9 @@ fun SettingsScreen(
     shotsPerEnd: Int,
     autoPauseEnabled: Boolean,
     autoPauseDuration: Int,
+    powerSavingEnabled: Boolean,
+    useSystemAod: Boolean,
+    dimBrightnessPercent: Int,
     phoneSyncStatus: String?,
     onSensitivityChange: (Sensitivity) -> Unit,
     onCustomThresholdChange: (Int) -> Unit,
@@ -65,6 +68,9 @@ fun SettingsScreen(
     onShotsPerEndChange: (Int) -> Unit,
     onAutoPauseEnabledChange: (Boolean) -> Unit,
     onAutoPauseDurationChange: (Int) -> Unit,
+    onPowerSavingEnabledChange: (Boolean) -> Unit,
+    onUseSystemAodChange: (Boolean) -> Unit,
+    onDimBrightnessPercentChange: (Int) -> Unit,
     onSyncData: () -> Unit,
     onClearData: () -> Unit
 ) {
@@ -306,6 +312,106 @@ fun SettingsScreen(
                                 modifier = Modifier.weight(1f)
                             ) { Text("+", fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) }
                         }
+                    }
+                }
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp, bottom = 4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.power_saving_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color(0xFFCCCCCC)
+                    )
+                }
+            }
+
+            item {
+                Button(
+                    onClick = { onPowerSavingEnabledChange(!powerSavingEnabled) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                    colors = if (powerSavingEnabled)
+                        ButtonDefaults.buttonColors()
+                    else
+                        ButtonDefaults.buttonColors(containerColor = Color(0xFF3A3A3A), contentColor = Color(0xFFAAAAAA))
+                ) {
+                    Text(
+                        text = stringResource(if (powerSavingEnabled) R.string.power_saving_on else R.string.power_saving_off),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            if (powerSavingEnabled) {
+                item {
+                    Button(
+                        onClick = { onUseSystemAodChange(!useSystemAod) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
+                            .transformedHeight(this, transformationSpec),
+                        transformation = SurfaceTransformation(transformationSpec),
+                        colors = if (useSystemAod)
+                            ButtonDefaults.buttonColors()
+                        else
+                            ButtonDefaults.buttonColors(containerColor = Color(0xFF3A3A3A), contentColor = Color(0xFFAAAAAA))
+                    ) {
+                        Text(
+                            text = stringResource(if (useSystemAod) R.string.use_aod_on else R.string.use_aod_off),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.dim_brightness_title),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = Color(0xFFCCCCCC)
+                        )
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            onClick = { if (dimBrightnessPercent > 1) onDimBrightnessPercentChange(dimBrightnessPercent - 1) },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3A3A3A), contentColor = Color(0xFFCCCCCC))
+                        ) { Text("−", fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) }
+                        Text(
+                            text = "$dimBrightnessPercent%",
+                            modifier = Modifier.weight(1f),
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Button(
+                            onClick = { if (dimBrightnessPercent < 50) onDimBrightnessPercentChange(dimBrightnessPercent + 1) },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("+", fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) }
                     }
                 }
             }

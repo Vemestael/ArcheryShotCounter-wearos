@@ -34,6 +34,14 @@
     <string name="auto_pause_on">自动暂停：开</string>
     <string name="auto_pause_off">自动暂停：关</string>
     <string name="pause_duration_title">暂停时长</string>
+
+    <string name="power_saving_title">节能</string>
+    <string name="power_saving_on">节能：开</string>
+    <string name="power_saving_off">节能：关</string>
+    <string name="use_aod_on">Always On Display：开</string>
+    <string name="use_aod_off">Always On Display：关</string>
+    <string name="dim_brightness_title">调暗亮度</string>
+
     <string name="unit_accel">m/s²</string>
     <string name="time_h">小时</string>
     <string name="time_m">分</string>

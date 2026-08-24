@@ -1,12 +1,18 @@
 package com.vemestael.archeryshotcounter.presentation
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.Handler
-import android.os.Looper
+import android.os.SystemClock
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import com.vemestael.archeryshotcounter.R
 import kotlin.math.sqrt
 
@@ -30,10 +36,18 @@ enum class Sensitivity(@param:StringRes val labelRes: Int, val threshold: Float)
  * in practice this produced double-counted shots when the wrist kept moving right around
  * the cooldown boundary.
  *
+ * The re-registration after [cooldownMs] is scheduled via [AlarmManager.setAndAllowWhileIdle]
+ * rather than a plain Handler.postDelayed: in real system Ambient Mode the CPU can suspend
+ * between sensor events, and a Handler timer only fires once the main thread's looper is
+ * already running again. Without an alarm to force that wakeup, the watch would detect at
+ * most one shot in ambient and then never re-register until something else (a wrist gesture,
+ * screen wake) happened to resume the CPU.
+ *
  * The actual accept/reject decision (same-batch guard + post-registration settle window) lives
  * in [ShotDetectionPolicy], which is plain Kotlin and unit tested independently of this class.
  */
 class ShotDetector(
+    private val context: Context,
     private val sensorManager: SensorManager,
     private val onShotDetected: (magnitude: Float) -> Unit
 ) : SensorEventListener {
@@ -41,15 +55,24 @@ class ShotDetector(
     companion object {
         private const val GRAVITY = 9.81f
         const val DEFAULT_COOLDOWN_MS = 10_000L
+        private const val ACTION_REREGISTER = "com.vemestael.archeryshotcounter.action.REREGISTER_SHOT_SENSOR"
     }
 
     var sensitivity = Sensitivity.MEDIUM
     var customThreshold: Float = 15f
     var cooldownMs: Long = DEFAULT_COOLDOWN_MS
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val policy = ShotDetectionPolicy()
-    private var reregisterRunnable: Runnable? = null
+    private val reregisterPendingIntent = PendingIntent.getBroadcast(
+        context, 0, Intent(ACTION_REREGISTER).setPackage(context.packageName), PendingIntent.FLAG_IMMUTABLE
+    )
+    private val reregisterReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (isRunning) registerSensor()
+        }
+    }
+    private var receiverRegistered = false
     private var activeSensor: Sensor? = null
     private var isRunning = false
     private var useLinearAccel = true
@@ -66,6 +89,12 @@ class ShotDetector(
         } ?: return
         activeSensor = sensor
         isRunning = true
+        if (!receiverRegistered) {
+            ContextCompat.registerReceiver(
+                context, reregisterReceiver, IntentFilter(ACTION_REREGISTER), ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+            receiverRegistered = true
+        }
         registerSensor()
     }
 
@@ -75,6 +104,10 @@ class ShotDetector(
         sensorManager.unregisterListener(this)
         isRunning = false
         activeSensor = null
+        if (receiverRegistered) {
+            context.unregisterReceiver(reregisterReceiver)
+            receiverRegistered = false
+        }
     }
 
     /** Suppresses detection for [cooldownMs] without polling the sensor, e.g. right after resuming from a manual pause. */
@@ -91,18 +124,13 @@ class ShotDetector(
     }
 
     private fun schedulePendingReregister() {
-        cancelPendingReregister()
-        val runnable = Runnable {
-            reregisterRunnable = null
-            if (isRunning) registerSensor()
-        }
-        reregisterRunnable = runnable
-        handler.postDelayed(runnable, cooldownMs)
+        alarmManager.setAndAllowWhileIdle(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + cooldownMs, reregisterPendingIntent
+        )
     }
 
     private fun cancelPendingReregister() {
-        reregisterRunnable?.let { handler.removeCallbacks(it) }
-        reregisterRunnable = null
+        alarmManager.cancel(reregisterPendingIntent)
     }
 
     override fun onSensorChanged(event: SensorEvent) {
