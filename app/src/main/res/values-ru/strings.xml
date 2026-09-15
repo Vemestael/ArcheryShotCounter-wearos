@@ -68,4 +68,8 @@
     <string name="aod_prompt_message">Во время тренировки экран будет оставаться включённым в приглушённом режиме. Включи Always On Display в настройках часов для лучшей автономности.</string>
     <string name="aod_prompt_open_settings">Открыть настройки</string>
     <string name="aod_prompt_dismiss">Не сейчас</string>
+    <string name="battery_prompt_title">Оптимизация батареи</string>
+    <string name="battery_prompt_message">Часы могут «усыплять» приложение в фоне — это может останавливать детекцию выстрелов в долгих сессиях. Разреши работу без ограничений.</string>
+    <string name="battery_prompt_allow">Разрешить</string>
+    <string name="battery_prompt_dismiss">Не сейчас</string>
 </resources>

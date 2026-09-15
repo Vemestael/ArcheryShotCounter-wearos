@@ -68,4 +68,8 @@
     <string name="aod_prompt_message">सत्र के दौरान स्क्रीन धीमी चमक के साथ चालू रहेगी। बेहतर बैटरी लाइफ के लिए घड़ी की सेटिंग्स में Always On Display चालू करें।</string>
     <string name="aod_prompt_open_settings">सेटिंग्स खोलें</string>
     <string name="aod_prompt_dismiss">अभी नहीं</string>
+    <string name="battery_prompt_title">बैटरी अनुकूलन</string>
+    <string name="battery_prompt_message">घड़ी बैकग्राउंड में ऐप को सुला सकती है, जिससे लंबे सेशन में शॉट डिटेक्शन रुक सकता है। इसे बिना किसी रोक-टोक के चलने दें।</string>
+    <string name="battery_prompt_allow">अनुमति दें</string>
+    <string name="battery_prompt_dismiss">अभी नहीं</string>
 </resources>

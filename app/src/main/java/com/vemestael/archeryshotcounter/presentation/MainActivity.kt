@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.hardware.SensorManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -58,6 +60,7 @@ private const val KEY_SHOTS_PER_END = "shots_per_end"
 private const val KEY_AUTO_PAUSE_ENABLED = "auto_pause_enabled"
 private const val KEY_AUTO_PAUSE_DURATION = "auto_pause_duration"
 private const val KEY_AOD_PROMPT_DISMISSED = "aod_prompt_dismissed"
+private const val KEY_BATTERY_PROMPT_DISMISSED = "battery_prompt_dismissed"
 private const val KEY_POWER_SAVING_ENABLED = "power_saving_enabled"
 private const val KEY_USE_SYSTEM_AOD = "use_system_aod"
 private const val KEY_DIM_BRIGHTNESS_PERCENT = "dim_brightness_percent"
@@ -119,6 +122,7 @@ class MainActivity : ComponentActivity() {
 
     private var ambientAvailability = AmbientAvailability.UNKNOWN
     private var showAodPrompt by mutableStateOf(false)
+    private var showBatteryPrompt by mutableStateOf(false)
 
     private var powerSavingEnabled by mutableStateOf(true)
     private var useSystemAod by mutableStateOf(true)
@@ -190,6 +194,8 @@ class MainActivity : ComponentActivity() {
         ambientAvailability = detectAmbientAvailability()
         showAodPrompt = ambientAvailability == AmbientAvailability.DISABLED &&
             !prefs.getBoolean(KEY_AOD_PROMPT_DISMISSED, false)
+        showBatteryPrompt = !isIgnoringBatteryOptimizations() &&
+            !prefs.getBoolean(KEY_BATTERY_PROMPT_DISMISSED, false)
 
         dbExecutor.execute {
             if (database.sessionDao().getAll().isEmpty()) {
@@ -243,6 +249,9 @@ class MainActivity : ComponentActivity() {
                     showAodPrompt = showAodPrompt,
                     onOpenDisplaySettings = { dismissAodPrompt(openSettings = true) },
                     onDismissAodPrompt = { dismissAodPrompt(openSettings = false) },
+                    showBatteryPrompt = showBatteryPrompt,
+                    onAllowBatteryExemption = { dismissBatteryPrompt(requestExemption = true) },
+                    onDismissBatteryPrompt = { dismissBatteryPrompt(requestExemption = false) },
                     onStartOrToggle = ::onPrimaryButton,
                     onSecondaryButton = ::onSecondaryButton,
                     onEnd = ::endSession,
@@ -332,6 +341,27 @@ class MainActivity : ComponentActivity() {
         showAodPrompt = false
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit { putBoolean(KEY_AOD_PROMPT_DISMISSED, true) }
         if (openSettings) startActivity(Intent(Settings.ACTION_DISPLAY_SETTINGS))
+    }
+
+    /** Doze/App Standby exemption is separate from Ambient Mode: even with the screen genuinely
+     * dimmed via system AOD, the OS can still suspend the CPU and defer background work like our
+     * cooldown re-registration alarm unless the app is whitelisted. Some OEM skins (Samsung's
+     * "Put unused apps to sleep" in Device Care, for one) restrict background apps on top of and
+     * separately from this stock-Android mechanism, with no programmatic opt-out — if detection
+     * still stalls in ambient after granting this, that OEM-level list is the next place to check. */
+    private fun isIgnoringBatteryOptimizations(): Boolean {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(packageName)
+    }
+
+    private fun dismissBatteryPrompt(requestExemption: Boolean) {
+        showBatteryPrompt = false
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit { putBoolean(KEY_BATTERY_PROMPT_DISMISSED, true) }
+        if (requestExemption) {
+            startActivity(
+                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName"))
+            )
+        }
     }
 
     /** Forces a dimmed always-on screen when energy efficiency is on and the system doesn't
@@ -736,6 +766,9 @@ fun ArcheryApp(
     showAodPrompt: Boolean,
     onOpenDisplaySettings: () -> Unit,
     onDismissAodPrompt: () -> Unit,
+    showBatteryPrompt: Boolean,
+    onAllowBatteryExemption: () -> Unit,
+    onDismissBatteryPrompt: () -> Unit,
     onStartOrToggle: () -> Unit,
     onSecondaryButton: () -> Unit,
     onEnd: () -> Unit,
@@ -853,6 +886,11 @@ fun ArcheryApp(
                 AodPromptDialog(
                     onOpenSettings = onOpenDisplaySettings,
                     onDismiss = onDismissAodPrompt
+                )
+            } else if (showBatteryPrompt) {
+                BatteryPromptDialog(
+                    onOpenSettings = onAllowBatteryExemption,
+                    onDismiss = onDismissBatteryPrompt
                 )
             }
             if (showClearDataConfirm) {

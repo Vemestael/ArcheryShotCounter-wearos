@@ -68,4 +68,8 @@
     <string name="aod_prompt_message">세션 중에는 화면이 어둡게 켜진 상태로 유지됩니다. 배터리 수명을 늘리려면 시계 설정에서 Always On Display를 켜세요.</string>
     <string name="aod_prompt_open_settings">설정 열기</string>
     <string name="aod_prompt_dismiss">나중에</string>
+    <string name="battery_prompt_title">배터리 최적화</string>
+    <string name="battery_prompt_message">시계가 백그라운드에서 앱을 절전 모드로 전환하여 긴 세션 중 샷 감지가 멈출 수 있습니다. 제한 없이 실행되도록 허용하세요.</string>
+    <string name="battery_prompt_allow">허용</string>
+    <string name="battery_prompt_dismiss">나중에</string>
 </resources>

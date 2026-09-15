@@ -68,4 +68,8 @@
     <string name="aod_prompt_message">トレーニング中は画面が暗いまま点灯し続けます。バッテリーをより長持ちさせるには、時計の設定でAlways On Displayを有効にしてください。</string>
     <string name="aod_prompt_open_settings">設定を開く</string>
     <string name="aod_prompt_dismiss">後で</string>
+    <string name="battery_prompt_title">バッテリー最適化</string>
+    <string name="battery_prompt_message">時計がバックグラウンドでアプリをスリープさせ、長時間のセッションでショット検出が止まることがあります。制限なしで実行できるようにしてください。</string>
+    <string name="battery_prompt_allow">許可</string>
+    <string name="battery_prompt_dismiss">後で</string>
 </resources>

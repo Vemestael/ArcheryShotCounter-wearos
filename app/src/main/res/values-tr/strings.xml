@@ -68,4 +68,8 @@
     <string name="aod_prompt_message">Antrenman sırasında ekran sönük şekilde açık kalır. Daha iyi pil ömrü için saat ayarlarından Always On Display\'i etkinleştir.</string>
     <string name="aod_prompt_open_settings">Ayarları aç</string>
     <string name="aod_prompt_dismiss">Şimdi değil</string>
+    <string name="battery_prompt_title">Pil optimizasyonu</string>
+    <string name="battery_prompt_message">Saat, uygulamayı arka planda uyku moduna alabilir; bu da uzun oturumlarda atış algılamasını durdurabilir. Kısıtlama olmadan çalışmasına izin ver.</string>
+    <string name="battery_prompt_allow">İzin ver</string>
+    <string name="battery_prompt_dismiss">Şimdi değil</string>
 </resources>

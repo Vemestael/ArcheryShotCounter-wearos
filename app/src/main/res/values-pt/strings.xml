@@ -68,4 +68,8 @@
     <string name="aod_prompt_message">A tela permanecerá acesa e escurecida durante uma sessão. Ative o Always On Display nas configurações do relógio para melhor duração da bateria.</string>
     <string name="aod_prompt_open_settings">Abrir configurações</string>
     <string name="aod_prompt_dismiss">Agora não</string>
+    <string name="battery_prompt_title">Otimização de bateria</string>
+    <string name="battery_prompt_message">O relógio pode colocar o app para dormir em segundo plano, o que pode interromper a detecção de tiros em sessões longas. Permita que ele execute sem restrições.</string>
+    <string name="battery_prompt_allow">Permitir</string>
+    <string name="battery_prompt_dismiss">Agora não</string>
 </resources>
