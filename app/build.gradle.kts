@@ -46,6 +46,11 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            resValue("string", "app_name", "Archery Shot Counter Debug")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -54,6 +59,7 @@ android {
     useLibrary("wear-sdk")
     buildFeatures {
         compose = true
+        resValues = true
     }
 
 }
