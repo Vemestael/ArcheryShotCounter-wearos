@@ -1,5 +1,6 @@
 package com.vemestael.archeryshotcounter.presentation.theme
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,6 +41,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnItemScope
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumnScope
+import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
@@ -40,6 +49,7 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.SurfaceTransformation
 import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.lazy.TransformationSpec
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
@@ -96,6 +106,7 @@ fun AppButton(
     contentColor: Color = if (selected || destructive) LocalAppPalette.current.onAccent else LocalAppPalette.current.textDim,
     disabledContainerColor: Color = LocalAppPalette.current.bgElev2,
     disabledContentColor: Color = LocalAppPalette.current.textMuted,
+    shape: Shape = ButtonDefaults.shape,
     scope: TransformingLazyColumnItemScope? = null,
     transformationSpec: TransformationSpec? = null,
     content: @Composable RowScope.() -> Unit
@@ -112,6 +123,7 @@ fun AppButton(
         onClick = onClick,
         modifier = sizedModifier,
         enabled = enabled,
+        shape = shape,
         transformation = surfaceTransformation,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
@@ -144,6 +156,7 @@ fun AppButton(
     fontSize: TextUnit = TextUnit.Unspecified,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
+    shape: Shape = ButtonDefaults.shape,
     scope: TransformingLazyColumnItemScope? = null,
     transformationSpec: TransformationSpec? = null
 ) {
@@ -157,6 +170,7 @@ fun AppButton(
         contentColor = contentColor,
         disabledContainerColor = disabledContainerColor,
         disabledContentColor = disabledContentColor,
+        shape = shape,
         scope = scope,
         transformationSpec = transformationSpec
     ) {
@@ -233,7 +247,7 @@ fun ShotCounterDisplay(
     modifier: Modifier = Modifier,
     leftDelta: Int? = null,
     rightDelta: Int? = null,
-    fontSize: TextUnit = 72.sp,
+    fontSize: TextUnit = 52.sp,
     color: Color = LocalAppPalette.current.accent
 ) {
     if (leftDelta != null && rightDelta != null) {
@@ -363,7 +377,10 @@ fun AppListScreen(
     val listState = rememberTransformingLazyColumnState()
     val transformationSpec = rememberTransformationSpec()
     val scaffold = @Composable {
-        ScreenScaffold(scrollState = listState) { contentPadding ->
+        ScreenScaffold(
+            scrollState = listState,
+            timeText = { if (!listState.canScrollBackward) TimeText() }
+        ) { contentPadding ->
             TransformingLazyColumn(
                 contentPadding = contentPadding,
                 state = listState
@@ -382,5 +399,90 @@ fun AppListScreen(
         }
     } else {
         scaffold()
+    }
+}
+
+/**
+ * A hand-drawn play/pause glyph — two bars when [playing] (tapping pauses), a right-pointing
+ * triangle otherwise (tapping starts/resumes). Avoids pulling in an icon library for two shapes.
+ */
+@Composable
+fun PlayPauseIcon(
+    playing: Boolean,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        if (playing) {
+            val barWidth = size.minDimension * 0.18f
+            val barHeight = size.minDimension * 0.6f
+            val gap = size.minDimension * 0.16f
+            val top = (size.height - barHeight) / 2f
+            val cornerRadius = CornerRadius(barWidth * 0.3f)
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(size.width / 2f - gap / 2f - barWidth, top),
+                size = Size(barWidth, barHeight),
+                cornerRadius = cornerRadius
+            )
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(size.width / 2f + gap / 2f, top),
+                size = Size(barWidth, barHeight),
+                cornerRadius = cornerRadius
+            )
+        } else {
+            val w = size.minDimension * 0.55f
+            val h = size.minDimension * 0.62f
+            val left = (size.width - w) / 2f + w * 0.12f
+            val top = (size.height - h) / 2f
+            val path = Path().apply {
+                moveTo(left, top)
+                lineTo(left, top + h)
+                lineTo(left + w, top + h / 2f)
+                close()
+            }
+            drawPath(path, color = color)
+        }
+    }
+}
+
+/** A hand-drawn clock/timer glyph — stem, ring and two hands — for the auto-pause button. */
+@Composable
+fun TimerIcon(
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    Canvas(modifier = modifier) {
+        val strokeWidth = size.minDimension * 0.1f
+        val radius = size.minDimension * 0.36f
+        val center = Offset(size.width / 2f, size.height / 2f + size.minDimension * 0.06f)
+        drawLine(
+            color = color,
+            start = Offset(center.x, center.y - radius - size.minDimension * 0.16f),
+            end = Offset(center.x, center.y - radius - size.minDimension * 0.02f),
+            strokeWidth = strokeWidth,
+            cap = StrokeCap.Round
+        )
+        drawCircle(
+            color = color,
+            radius = radius,
+            center = center,
+            style = Stroke(width = strokeWidth)
+        )
+        drawLine(
+            color = color,
+            start = center,
+            end = Offset(center.x, center.y - radius * 0.55f),
+            strokeWidth = strokeWidth,
+            cap = StrokeCap.Round
+        )
+        drawLine(
+            color = color,
+            start = center,
+            end = Offset(center.x + radius * 0.45f, center.y),
+            strokeWidth = strokeWidth,
+            cap = StrokeCap.Round
+        )
     }
 }

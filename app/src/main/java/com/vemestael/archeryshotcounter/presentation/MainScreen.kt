@@ -5,16 +5,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
@@ -24,8 +31,10 @@ import com.vemestael.archeryshotcounter.presentation.theme.AppButton
 import com.vemestael.archeryshotcounter.presentation.theme.AppListScreen
 import com.vemestael.archeryshotcounter.presentation.theme.ListBottomSpacer
 import com.vemestael.archeryshotcounter.presentation.theme.LocalAppPalette
+import com.vemestael.archeryshotcounter.presentation.theme.PlayPauseIcon
 import com.vemestael.archeryshotcounter.presentation.theme.ShotCounterDisplay
 import com.vemestael.archeryshotcounter.presentation.theme.StatusIndicator
+import com.vemestael.archeryshotcounter.presentation.theme.TimerIcon
 
 @Composable
 fun MainScreen(
@@ -62,6 +71,13 @@ fun MainScreen(
         else -> LocalAppPalette.current.pause
     }
 
+    val primaryLabel = when {
+        !sessionExists -> stringResource(R.string.btn_start)
+        isDetecting -> stringResource(R.string.btn_stop)
+        else -> stringResource(R.string.btn_resume)
+    }
+    val stopping = isDetecting && sessionExists
+
     AppListScreen { transformationSpec ->
             item {
                 StatusIndicator(
@@ -69,16 +85,32 @@ fun MainScreen(
                     dotColor = statusColor,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 4.dp),
+                        .padding(top = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
                 )
+            }
+
+            if (shotsPerEnd > 0 && currentSession != null) {
+                item {
+                    val seriesIndex = shotCount / shotsPerEnd
+                    val prevBoundary = seriesIndex * shotsPerEnd
+                    val effectivePrev = if (shotCount == prevBoundary && prevBoundary > 0) prevBoundary - shotsPerEnd else prevBoundary
+                    val seriesNumber = effectivePrev / shotsPerEnd + 1
+                    Text(
+                        text = "${stringResource(R.string.series_title)} $seriesNumber",
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 1.dp),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = LocalAppPalette.current.textDim
+                    )
+                }
             }
 
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(bottom = 4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (shotsPerEnd > 0 && currentSession != null) {
@@ -94,6 +126,7 @@ fun MainScreen(
                     }
                     Text(
                         text = stringResource(R.string.shots_label),
+                        modifier = Modifier.padding(top = 2.dp),
                         style = MaterialTheme.typography.bodySmall,
                         color = LocalAppPalette.current.textDim
                     )
@@ -108,6 +141,7 @@ fun MainScreen(
             }
 
             item {
+                val squareShape = RoundedCornerShape(16.dp)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -115,73 +149,68 @@ fun MainScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     AppButton(
-                        text = "−1",
                         onClick = { onManualAdjust(-1) },
-                        modifier = Modifier.weight(1f),
-                        fontWeight = FontWeight.Bold
-                    )
+                        modifier = Modifier.weight(1f).aspectRatio(1f),
+                        shape = squareShape
+                    ) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("−", fontWeight = FontWeight.Bold)
+                        }
+                    }
                     AppButton(
-                        text = "+1",
+                        onClick = onPrimaryButton,
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .semantics { contentDescription = primaryLabel },
+                        selected = !stopping,
+                        destructive = stopping,
+                        shape = squareShape
+                    ) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            PlayPauseIcon(
+                                playing = stopping,
+                                color = LocalAppPalette.current.onAccent,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
+                    AppButton(
                         onClick = { onManualAdjust(1) },
-                        modifier = Modifier.weight(1f),
-                        fontWeight = FontWeight.Bold,
-                        selected = true
-                    )
+                        modifier = Modifier.weight(1f).aspectRatio(1f),
+                        selected = true,
+                        shape = squareShape
+                    ) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("+", fontWeight = FontWeight.Bold)
+                        }
+                    }
                 }
             }
 
-            item {
-                if (!sessionExists || !autoPauseEnabled) {
-                    val label = when {
-                        !sessionExists -> stringResource(R.string.btn_start)
-                        isDetecting -> stringResource(R.string.btn_stop)
-                        else -> stringResource(R.string.btn_resume)
-                    }
-                    val stopping = isDetecting && sessionExists
+            if (sessionExists && autoPauseEnabled) {
+                item {
+                    val secondaryLabel = if (autoPauseSecondsLeft >= 0)
+                        "+5$unitS"
+                    else
+                        stringResource(R.string.btn_auto_pause)
                     AppButton(
-                        text = label,
-                        onClick = onPrimaryButton,
-                        fontWeight = FontWeight.Bold,
-                        selected = !stopping,
-                        destructive = stopping,
+                        onClick = onSecondaryButton,
                         scope = this,
                         transformationSpec = transformationSpec
-                    )
-                } else {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        val leftLabel = if (isDetecting)
-                            stringResource(R.string.btn_stop)
-                        else
-                            stringResource(R.string.btn_resume)
-                        AppButton(
-                            text = leftLabel,
-                            onClick = onPrimaryButton,
-                            modifier = Modifier.weight(2f),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            selected = !isDetecting,
-                            destructive = isDetecting
-                        )
-                        val rightLabel = if (autoPauseSecondsLeft >= 0)
-                            "+5$unitS"
-                        else
-                            stringResource(R.string.btn_auto_pause)
-                        AppButton(
-                            text = rightLabel,
-                            onClick = onSecondaryButton,
-                            modifier = Modifier.weight(1f),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TimerIcon(
+                                color = LocalAppPalette.current.textDim,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(secondaryLabel)
+                        }
                     }
                 }
             }
