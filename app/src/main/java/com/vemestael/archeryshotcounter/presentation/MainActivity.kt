@@ -36,6 +36,8 @@ import androidx.wear.compose.foundation.pager.HorizontalPager
 import androidx.wear.compose.foundation.pager.rememberPagerState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.HorizontalPageIndicator
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
@@ -725,15 +727,55 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** Live delivery while the app is open, mirroring the phone's own listener. Without this, an
+     * edit/delete made on the phone still lands in the database right away (the always-bound
+     * [WatchSyncListenerService] sees to that), but an already-open History screen kept showing
+     * the stale in-memory [sessions] list until the app was restarted or Sync was tapped by hand —
+     * easy to mistake for "sync stopped working" when the underlying data was fine. */
+    private val dataListener = DataClient.OnDataChangedListener { events ->
+        val jsonPayloads = events.mapNotNull { event ->
+            if (event.type != DataEvent.TYPE_CHANGED) return@mapNotNull null
+            if (!event.dataItem.uri.path.orEmpty().startsWith("/session")) return@mapNotNull null
+            DataMapItem.fromDataItem(event.dataItem).dataMap.getString("json")
+        }
+        events.release()
+        if (jsonPayloads.isEmpty()) return@OnDataChangedListener
+        dbExecutor.execute {
+            jsonPayloads.forEach { json ->
+                try {
+                    val (session, shots) = parseSessionJson(json)
+                    database.mergeIncomingSession(session, shots)
+                } catch (_: Exception) {
+                    // skip malformed item, keep processing the rest
+                }
+            }
+            refreshSessionsFromDb()
+        }
+    }
+
+    /** Re-reads the session list from the database onto the UI thread. Called from [dataListener]
+     * (already on [dbExecutor]) and from [onResume] (to catch up on anything the background
+     * [WatchSyncListenerService] persisted while the app wasn't in the foreground to listen live). */
+    private fun refreshSessionsFromDb() {
+        val all = database.sessionDao().getAll()
+        runOnUiThread {
+            sessions.clear()
+            sessions.addAll(all)
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         if (isDetecting) shotDetector.stop()
         cancelAutoPause()
+        Wearable.getDataClient(this).removeListener(dataListener)
     }
 
     override fun onResume() {
         super.onResume()
         if (isDetecting) shotDetector.start()
+        Wearable.getDataClient(this).addListener(dataListener)
+        dbExecutor.execute { refreshSessionsFromDb() }
     }
 
     override fun onStop() {
