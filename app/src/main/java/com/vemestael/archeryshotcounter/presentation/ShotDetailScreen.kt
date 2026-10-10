@@ -3,7 +3,8 @@ package com.vemestael.archeryshotcounter.presentation
 import android.text.format.DateFormat as AndroidDateFormat
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -41,7 +42,6 @@ fun ShotDetailScreen(
     val locale = LocalConfiguration.current.locales[0]
     val timeFormat = remember(context) { AndroidDateFormat.getTimeFormat(context) }
     val dateFormat = remember(locale) { SimpleDateFormat("d MMM", locale) }
-    val unitAccel = stringResource(R.string.unit_accel)
     val totalShots = shots.size
 
     AppListScreen(fillBackground = true) { transformationSpec ->
@@ -75,25 +75,34 @@ fun ShotDetailScreen(
                         scope = this,
                         transformationSpec = transformationSpec
                     ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
                                 text = "#$shotNumber",
                                 fontFamily = IbmPlexMono,
-                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 12.sp,
                                 color = LocalAppPalette.current.textDim
                             )
                             Text(
                                 text = timeFormat.format(Date(shot.timestamp)),
                                 fontFamily = IbmPlexMono,
                                 fontSize = 12.sp,
-                                color = LocalAppPalette.current.text
+                                color = LocalAppPalette.current.text,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp)
                             )
                             Text(
-                                text = if (shot.magnitude != null) "↑ ${"%.1f".format(shot.magnitude)} $unitAccel" else "—",
+                                text = if (shot.magnitude != null) "↑${"%.1f".format(shot.magnitude)}" else "—",
                                 fontFamily = IbmPlexMono,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (shot.magnitude != null) MaterialTheme.colorScheme.primary else LocalAppPalette.current.textMuted
+                                color = if (shot.magnitude != null) MaterialTheme.colorScheme.primary else LocalAppPalette.current.textMuted,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.defaultMinSize(minWidth = 48.dp)
                             )
                         }
                     }

@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -141,6 +142,49 @@ fun InfoButton(onClick: () -> Unit, color: Color, modifier: Modifier = Modifier)
         contentAlignment = Alignment.Center
     ) {
         InfoIcon(color = color, modifier = Modifier.size(13.dp))
+    }
+}
+
+/** A hand-drawn pencil glyph — a rotated rounded body with a triangular tip — for an edit affordance. */
+@Composable
+fun EditIcon(color: Color, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        rotate(degrees = 45f) {
+            val bodyWidth = size.minDimension * 0.22f
+            val bodyHeight = size.minDimension * 0.8f
+            val tipHeight = bodyHeight * 0.28f
+            val left = (size.width - bodyWidth) / 2f
+            val top = (size.height - bodyHeight) / 2f
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(left, top),
+                size = Size(bodyWidth, bodyHeight - tipHeight),
+                cornerRadius = CornerRadius(bodyWidth * 0.3f)
+            )
+            val tipPath = Path().apply {
+                moveTo(left, top + bodyHeight - tipHeight)
+                lineTo(left + bodyWidth, top + bodyHeight - tipHeight)
+                lineTo(left + bodyWidth / 2f, top + bodyHeight)
+                close()
+            }
+            drawPath(tipPath, color = color)
+        }
+    }
+}
+
+/**
+ * A tappable [EditIcon] with a touch target comfortably larger than the glyph itself, for use
+ * next to a session's date in the history list. Opens that session's edit dialog when tapped.
+ */
+@Composable
+fun EditButton(onClick: () -> Unit, color: Color, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(20.dp)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        EditIcon(color = color, modifier = Modifier.size(13.dp))
     }
 }
 

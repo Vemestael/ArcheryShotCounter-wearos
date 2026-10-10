@@ -18,9 +18,15 @@
     <string name="btn_reset">إنهاء</string>
     <string name="btn_auto_pause">تلقائي</string>
 
+    <string name="history_title">السجل</string>
     <string name="history_empty">لا توجد جلسات</string>
     <string name="dialog_save">حفظ</string>
     <string name="dialog_delete">حذف</string>
+    <string name="edit_session_title">تعديل الجلسة</string>
+    <string name="edit_start_time">وقت البداية</string>
+    <string name="edit_end_time">وقت النهاية</string>
+    <string name="edit_shots">الرميات</string>
+    <string name="edit_shots_per_end">الرميات / سلسلة</string>
 
     <string name="sensitivity_title">الحساسية</string>
     <string name="sensitivity_range">م/ث²  •  النطاق 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">كبير</string>
 
     <string name="series_title">سلسلة</string>
+    <string name="history_series_size">%1$d/سلسلة</string>
     <string name="series_off">إيقاف</string>
     <string name="info_series_body">يجمع رمياتك في مجموعات بهذا الحجم. يعرض العداد التقدم ضمن المجموعة الحالية ويبدأ مجموعة جديدة تلقائيًا عند اكتمالها. اختر «إيقاف» لعدّ الرميات فقط دون تجميع.</string>
     <string name="auto_pause_title">إيقاف مؤقت تلقائي</string>
@@ -72,7 +79,6 @@
     <string name="time_m">د</string>
     <string name="time_s">ث</string>
 
-    <string name="btn_detail">تفاصيل</string>
     <string name="shots_empty">لا توجد بيانات</string>
 
     <string name="export_title">البيانات</string>

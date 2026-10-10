@@ -18,9 +18,15 @@
     <string name="btn_reset">Fin</string>
     <string name="btn_auto_pause">auto</string>
 
+    <string name="history_title">Historique</string>
     <string name="history_empty">Aucune séance</string>
     <string name="dialog_save">Enregistrer</string>
     <string name="dialog_delete">Supprimer</string>
+    <string name="edit_session_title">Modifier la séance</string>
+    <string name="edit_start_time">Heure de début</string>
+    <string name="edit_end_time">Heure de fin</string>
+    <string name="edit_shots">Tirs</string>
+    <string name="edit_shots_per_end">Tirs / série</string>
 
     <string name="sensitivity_title">Sensibilité</string>
     <string name="sensitivity_range">m/s²  •  plage 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">Grand</string>
 
     <string name="series_title">Série</string>
+    <string name="history_series_size">%1$d/série</string>
     <string name="series_off">Désactivé</string>
     <string name="info_series_body">Regroupe vos tirs en volées de cette taille. Le compteur affiche la progression dans la volée en cours et en démarre une nouvelle automatiquement une fois celle-ci complète. Mettez sur « Désactivé » pour simplement compter les tirs sans regroupement.</string>
     <string name="auto_pause_title">Pause automatique</string>
@@ -72,7 +79,6 @@
     <string name="time_m">min</string>
     <string name="time_s">s</string>
 
-    <string name="btn_detail">Détails</string>
     <string name="shots_empty">Aucune donnée</string>
 
     <string name="export_title">Données</string>

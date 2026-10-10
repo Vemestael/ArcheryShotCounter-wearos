@@ -18,9 +18,15 @@
     <string name="btn_reset">Конец</string>
     <string name="btn_auto_pause">авто</string>
 
+    <string name="history_title">История</string>
     <string name="history_empty">Нет тренировок</string>
     <string name="dialog_save">Сохранить</string>
     <string name="dialog_delete">Удалить</string>
+    <string name="edit_session_title">Редактировать сессию</string>
+    <string name="edit_start_time">Время начала</string>
+    <string name="edit_end_time">Время конца</string>
+    <string name="edit_shots">Выстрелы</string>
+    <string name="edit_shots_per_end">Выстрелы / серия</string>
 
     <string name="sensitivity_title">Чувствительность</string>
     <string name="sensitivity_range">м/с²  •  диапазон 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">Крупный</string>
 
     <string name="series_title">Серия</string>
+    <string name="history_series_size">%1$d/серия</string>
     <string name="series_off">Выкл</string>
     <string name="info_series_body">Группирует выстрелы в серии такого размера. Счётчик показывает прогресс внутри текущей серии и автоматически начинает новую, когда она заполнена. Поставьте «Выкл», чтобы просто считать выстрелы без группировки.</string>
     <string name="auto_pause_title">Авто-пауза</string>
@@ -72,7 +79,6 @@
     <string name="time_m">м</string>
     <string name="time_s">с</string>
 
-    <string name="btn_detail">Детальнее</string>
     <string name="shots_empty">Нет данных</string>
 
     <string name="export_title">Данные</string>

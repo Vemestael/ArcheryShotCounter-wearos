@@ -107,6 +107,8 @@ class MainActivity : ComponentActivity() {
     private var detailSession by mutableStateOf<Session?>(null)
     private val detailShots = mutableStateListOf<Shot>()
 
+    private var editingSession by mutableStateOf<Session?>(null)
+
     private var isAmbient by mutableStateOf(false)
     private val ambientCallback = object : AmbientLifecycleObserver.AmbientLifecycleCallback {
         override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {
@@ -309,6 +311,9 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     onDismissDetail = { detailSession = null; detailShots.clear() },
+                    editingSession = editingSession,
+                    onShowEdit = { session -> editingSession = session },
+                    onDismissEdit = { editingSession = null },
                     onShotsPerEndChange = { value ->
                         shotsPerEnd = value
                         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -677,13 +682,34 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun editSession(edited: Session) {
+    /** [original] is the session as it was before the edit dialog opened it, used only to detect
+     * what changed (shot count, narrowed start/end) so the underlying shot rows can be kept
+     * consistent with it — never persisted itself. */
+    private fun editSession(original: Session, edited: Session) {
         val updated = edited.copy(lastModified = System.currentTimeMillis())
         val idx = sessions.indexOfFirst { it.id == updated.id }
         if (idx >= 0) {
             sessions[idx] = updated
+            val countDelta = updated.shotCount - original.shotCount
             dbExecutor.execute {
                 database.sessionDao().insertOrUpdate(updated)
+                // Shots added/removed by hand through the counter (not real detections) are
+                // timestamped at the session's end so they show up in the per-shot history too.
+                if (countDelta > 0) {
+                    repeat(countDelta) {
+                        database.shotDao().insert(Shot(sessionId = updated.id, timestamp = updated.lastShotTime, magnitude = null))
+                    }
+                } else if (countDelta < 0) {
+                    database.shotDao().deleteLatest(updated.id, -countDelta)
+                }
+                // Narrowing the window (end moved earlier / start moved later) can leave shots
+                // outside it — pull those back inside instead of leaving them stranded.
+                if (updated.lastShotTime < original.lastShotTime) {
+                    database.shotDao().clampTimestampsAfter(updated.id, updated.lastShotTime)
+                }
+                if (updated.startTime > original.startTime) {
+                    database.shotDao().clampTimestampsBefore(updated.id, updated.startTime)
+                }
                 syncSessionToPhone(updated, database.shotDao().getBySession(updated.id))
             }
         }
@@ -802,7 +828,7 @@ fun ArcheryApp(
     onLanguageChange: (AppLanguage) -> Unit,
     onThemeChange: (PaletteChoice) -> Unit,
     onCounterSizeChange: (CounterSize) -> Unit,
-    onEditSession: (Session) -> Unit,
+    onEditSession: (Session, Session) -> Unit,
     onDeleteSession: (Session) -> Unit,
     onShotsPerEndChange: (Int) -> Unit,
     onAutoPauseEnabledChange: (Boolean) -> Unit,
@@ -813,7 +839,10 @@ fun ArcheryApp(
     detailSession: Session?,
     detailShots: List<Shot>,
     onShowDetail: (Session) -> Unit,
-    onDismissDetail: () -> Unit
+    onDismissDetail: () -> Unit,
+    editingSession: Session?,
+    onShowEdit: (Session) -> Unit,
+    onDismissEdit: () -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { 3 })
     var showLanguagePicker by remember { mutableStateOf(false) }
@@ -848,9 +877,8 @@ fun ArcheryApp(
                         sessions = sessions,
                         currentSession = currentSession,
                         activeShotCount = shotCount,
-                        onEdit = onEditSession,
-                        onDelete = onDeleteSession,
-                        onShowDetail = onShowDetail
+                        onShowDetail = onShowDetail,
+                        onShowEdit = onShowEdit
                     )
                     1 -> MainScreen(
                         shotCount = shotCount,
@@ -883,6 +911,20 @@ fun ArcheryApp(
                     session = detailSession,
                     shots = detailShots,
                     onDismiss = onDismissDetail
+                )
+            }
+            if (editingSession != null) {
+                EditSessionScreen(
+                    session = editingSession,
+                    onSave = { updated ->
+                        onEditSession(editingSession, updated)
+                        onDismissEdit()
+                    },
+                    onDelete = {
+                        onDeleteSession(editingSession)
+                        onDismissEdit()
+                    },
+                    onDismiss = onDismissEdit
                 )
             }
             if (showDetectionSettings) {

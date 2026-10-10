@@ -18,9 +18,15 @@
     <string name="btn_reset">Ende</string>
     <string name="btn_auto_pause">auto</string>
 
+    <string name="history_title">Verlauf</string>
     <string name="history_empty">Keine Trainings</string>
     <string name="dialog_save">Speichern</string>
     <string name="dialog_delete">Löschen</string>
+    <string name="edit_session_title">Sitzung bearbeiten</string>
+    <string name="edit_start_time">Startzeit</string>
+    <string name="edit_end_time">Endzeit</string>
+    <string name="edit_shots">Schüsse</string>
+    <string name="edit_shots_per_end">Schüsse / Serie</string>
 
     <string name="sensitivity_title">Empfindlichkeit</string>
     <string name="sensitivity_range">m/s²  •  Bereich 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">Groß</string>
 
     <string name="series_title">Serie</string>
+    <string name="history_series_size">%1$d/Serie</string>
     <string name="series_off">Aus</string>
     <string name="info_series_body">Gruppiert deine Schüsse in Durchgängen dieser Größe. Der Zähler zeigt den Fortschritt im aktuellen Durchgang und beginnt automatisch einen neuen, sobald er voll ist. Auf „Aus“ stellen, um Schüsse einfach ohne Gruppierung zu zählen.</string>
     <string name="auto_pause_title">Auto-Pause</string>
@@ -72,7 +79,6 @@
     <string name="time_m">Min</string>
     <string name="time_s">Sek</string>
 
-    <string name="btn_detail">Details</string>
     <string name="shots_empty">Keine Daten</string>
 
     <string name="export_title">Daten</string>

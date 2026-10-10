@@ -18,9 +18,15 @@
     <string name="btn_reset">समाप्त</string>
     <string name="btn_auto_pause">ऑटो</string>
 
+    <string name="history_title">इतिहास</string>
     <string name="history_empty">कोई सत्र नहीं</string>
     <string name="dialog_save">सहेजें</string>
     <string name="dialog_delete">हटाएं</string>
+    <string name="edit_session_title">सत्र संपादित करें</string>
+    <string name="edit_start_time">शुरू का समय</string>
+    <string name="edit_end_time">समाप्ति का समय</string>
+    <string name="edit_shots">तीर</string>
+    <string name="edit_shots_per_end">तीर / सीरीज़</string>
 
     <string name="sensitivity_title">संवेदनशीलता</string>
     <string name="sensitivity_range">m/s²  •  सीमा 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">बड़ा</string>
 
     <string name="series_title">श्रृंखला</string>
+    <string name="history_series_size">%1$d/सीरीज़</string>
     <string name="series_off">बंद</string>
     <string name="info_series_body">आपके शॉट्स को इतने आकार के एंड में समूहित करता है। काउंटर मौजूदा एंड में प्रगति दिखाता है और पूरा होने पर अपने आप नया एंड शुरू कर देता है। बिना समूहीकरण के सिर्फ शॉट गिनने के लिए "बंद" चुनें।</string>
     <string name="auto_pause_title">स्वतः विराम</string>
@@ -72,7 +79,6 @@
     <string name="time_m">मि</string>
     <string name="time_s">से</string>
 
-    <string name="btn_detail">विवरण</string>
     <string name="shots_empty">कोई डेटा नहीं</string>
 
     <string name="export_title">डेटा</string>

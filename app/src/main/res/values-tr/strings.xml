@@ -18,9 +18,15 @@
     <string name="btn_reset">Bitir</string>
     <string name="btn_auto_pause">oto</string>
 
+    <string name="history_title">Geçmiş</string>
     <string name="history_empty">Henüz oturum yok</string>
     <string name="dialog_save">Kaydet</string>
     <string name="dialog_delete">Sil</string>
+    <string name="edit_session_title">Oturumu düzenle</string>
+    <string name="edit_start_time">Başlangıç saati</string>
+    <string name="edit_end_time">Bitiş saati</string>
+    <string name="edit_shots">Atışlar</string>
+    <string name="edit_shots_per_end">Atışlar / seri</string>
 
     <string name="sensitivity_title">Hassasiyet</string>
     <string name="sensitivity_range">m/s²  •  aralık 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">Büyük</string>
 
     <string name="series_title">Seri</string>
+    <string name="history_series_size">%1$d/seri</string>
     <string name="series_off">Kapalı</string>
     <string name="info_series_body">Atışlarını bu boyutta serilere gruplar. Sayaç mevcut seri içindeki ilerlemeyi gösterir ve seri dolduğunda otomatik olarak yenisini başlatır. Gruplamadan sadece atış saymak için "Kapalı" seçin.</string>
     <string name="auto_pause_title">Otomatik duraklama</string>
@@ -72,7 +79,6 @@
     <string name="time_m">dk</string>
     <string name="time_s">sn</string>
 
-    <string name="btn_detail">Detaylar</string>
     <string name="shots_empty">Veri yok</string>
 
     <string name="export_title">Veri</string>

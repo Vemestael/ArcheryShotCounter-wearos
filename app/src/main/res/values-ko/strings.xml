@@ -18,9 +18,15 @@
     <string name="btn_reset">종료</string>
     <string name="btn_auto_pause">자동</string>
 
+    <string name="history_title">기록</string>
     <string name="history_empty">세션 없음</string>
     <string name="dialog_save">저장</string>
     <string name="dialog_delete">삭제</string>
+    <string name="edit_session_title">세션 편집</string>
+    <string name="edit_start_time">시작 시간</string>
+    <string name="edit_end_time">종료 시간</string>
+    <string name="edit_shots">발수</string>
+    <string name="edit_shots_per_end">발수 / 세트</string>
 
     <string name="sensitivity_title">감도</string>
     <string name="sensitivity_range">m/s²  •  범위 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">큼</string>
 
     <string name="series_title">시리즈</string>
+    <string name="history_series_size">%1$d/세트</string>
     <string name="series_off">끄기</string>
     <string name="info_series_body">이 개수만큼 발사를 세트(엔드)로 묶습니다. 카운터는 현재 엔드 내 진행 상황을 보여주고, 다 채워지면 자동으로 새 엔드를 시작합니다. 묶지 않고 그냥 발사 수만 세려면 "끄기"로 설정하세요.</string>
     <string name="auto_pause_title">자동 일시정지</string>
@@ -72,7 +79,6 @@
     <string name="time_m">분</string>
     <string name="time_s">초</string>
 
-    <string name="btn_detail">상세</string>
     <string name="shots_empty">데이터 없음</string>
 
     <string name="export_title">데이터</string>

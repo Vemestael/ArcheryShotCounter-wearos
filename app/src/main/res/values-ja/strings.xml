@@ -18,9 +18,15 @@
     <string name="btn_reset">終了</string>
     <string name="btn_auto_pause">自動</string>
 
+    <string name="history_title">履歴</string>
     <string name="history_empty">セッションなし</string>
     <string name="dialog_save">保存</string>
     <string name="dialog_delete">削除</string>
+    <string name="edit_session_title">セッションを編集</string>
+    <string name="edit_start_time">開始時刻</string>
+    <string name="edit_end_time">終了時刻</string>
+    <string name="edit_shots">射数</string>
+    <string name="edit_shots_per_end">射数 / セット</string>
 
     <string name="sensitivity_title">感度</string>
     <string name="sensitivity_range">m/s²  •  範囲 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">大</string>
 
     <string name="series_title">シリーズ</string>
+    <string name="history_series_size">%1$d/セット</string>
     <string name="series_off">オフ</string>
     <string name="info_series_body">指定した本数ごとに射をエンドにまとめます。カウンターは現在のエンド内の進行状況を表示し、エンドが満了すると自動的に次のエンドを開始します。「オフ」にするとグループ化せずに射数だけをカウントします。</string>
     <string name="auto_pause_title">自動一時停止</string>
@@ -72,7 +79,6 @@
     <string name="time_m">分</string>
     <string name="time_s">秒</string>
 
-    <string name="btn_detail">詳細</string>
     <string name="shots_empty">データなし</string>
 
     <string name="export_title">データ</string>

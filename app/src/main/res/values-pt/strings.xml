@@ -18,9 +18,15 @@
     <string name="btn_reset">Fim</string>
     <string name="btn_auto_pause">auto</string>
 
+    <string name="history_title">Histórico</string>
     <string name="history_empty">Sem sessões ainda</string>
     <string name="dialog_save">Salvar</string>
     <string name="dialog_delete">Excluir</string>
+    <string name="edit_session_title">Editar sessão</string>
+    <string name="edit_start_time">Hora de início</string>
+    <string name="edit_end_time">Hora de término</string>
+    <string name="edit_shots">Disparos</string>
+    <string name="edit_shots_per_end">Disparos / série</string>
 
     <string name="sensitivity_title">Sensibilidade</string>
     <string name="sensitivity_range">m/s²  •  intervalo 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">Grande</string>
 
     <string name="series_title">Série</string>
+    <string name="history_series_size">%1$d/série</string>
     <string name="series_off">Desligado</string>
     <string name="info_series_body">Agrupa seus tiros em séries deste tamanho. O contador mostra o progresso na série atual e inicia uma nova automaticamente ao completá-la. Defina como "Desligado" para apenas contar tiros sem agrupamento.</string>
     <string name="auto_pause_title">Pausa automática</string>
@@ -72,7 +79,6 @@
     <string name="time_m">min</string>
     <string name="time_s">s</string>
 
-    <string name="btn_detail">Detalhes</string>
     <string name="shots_empty">Sem dados</string>
 
     <string name="export_title">Dados</string>

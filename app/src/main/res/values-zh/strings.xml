@@ -18,9 +18,15 @@
     <string name="btn_reset">结束</string>
     <string name="btn_auto_pause">自动</string>
 
+    <string name="history_title">历史记录</string>
     <string name="history_empty">暂无训练记录</string>
     <string name="dialog_save">保存</string>
     <string name="dialog_delete">删除</string>
+    <string name="edit_session_title">编辑训练</string>
+    <string name="edit_start_time">开始时间</string>
+    <string name="edit_end_time">结束时间</string>
+    <string name="edit_shots">箭数</string>
+    <string name="edit_shots_per_end">箭数 / 组</string>
 
     <string name="sensitivity_title">灵敏度</string>
     <string name="sensitivity_range">m/s²  •  范围 5–50</string>
@@ -49,6 +55,7 @@
     <string name="counter_size_large">大</string>
 
     <string name="series_title">系列</string>
+    <string name="history_series_size">%1$d/组</string>
     <string name="series_off">关闭</string>
     <string name="info_series_body">按此数量将箭数分组为一组（end）。计数器会显示当前组的进度，组满后自动开始下一组。设为「关」则只统计箭数，不分组。</string>
     <string name="auto_pause_title">自动暂停</string>
@@ -72,7 +79,6 @@
     <string name="time_m">分</string>
     <string name="time_s">秒</string>
 
-    <string name="btn_detail">详情</string>
     <string name="shots_empty">无数据</string>
 
     <string name="export_title">数据</string>
