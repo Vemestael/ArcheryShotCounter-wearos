@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_menu_detection">الكشف</string>
+    <string name="settings_menu_display">الشاشة والبطارية</string>
+    <string name="settings_menu_appearance_language">المظهر واللغة</string>
+    <string name="info_dialog_dismiss">فهمت</string>
+
     <string name="status_ready">جاهز</string>
     <string name="status_detecting">كشف</string>
     <string name="status_paused">متوقف</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">متوسطة (13 م/ث²)</string>
     <string name="sensitivity_low">منخفضة (20 م/ث²)</string>
     <string name="sensitivity_custom">مخصص</string>
+    <string name="info_sensitivity_body">مدى حدة حركة الذراع التي ترتدي الساعة لتُحتسب رمية. الرقم الأعلى (مثل 20) يحتاج حركة أكثر حدة ويتجاهل الحركات الخفيفة؛ والرقم الأقل (مثل 8) يلتقط الإطلاقات الأخف لكنه قد يستجيب لحركة عشوائية في الذراع.</string>
 
     <string name="cooldown_title">تأخير بين الرميات</string>
+    <string name="info_cooldown_body">أقل وقت بعد احتساب رمية قبل أن تُسجَّل الرمية التالية. يمنع اهتزاز الإطلاق المتبقي من أن يُحتسب كرميتين.</string>
 
     <string name="lang_section_title">اللغة</string>
     <string name="lang_system">النظام</string>
 
+    <string name="appearance_title">المظهر</string>
+    <string name="theme_brass">نحاس أصفر</string>
+    <string name="theme_forest">غابة</string>
+    <string name="theme_target">الهدف</string>
+    <string name="theme_steel">فولاذ</string>
+    <string name="theme_neon">نيون</string>
+    <string name="theme_parchment">رق</string>
+    <string name="counter_size_title">حجم العداد</string>
+    <string name="counter_size_small">صغير</string>
+    <string name="counter_size_medium">متوسط</string>
+    <string name="counter_size_large">كبير</string>
+
     <string name="series_title">سلسلة</string>
     <string name="series_off">إيقاف</string>
+    <string name="info_series_body">يجمع رمياتك في مجموعات بهذا الحجم. يعرض العداد التقدم ضمن المجموعة الحالية ويبدأ مجموعة جديدة تلقائيًا عند اكتمالها. اختر «إيقاف» لعدّ الرميات فقط دون تجميع.</string>
     <string name="auto_pause_title">إيقاف مؤقت تلقائي</string>
     <string name="auto_pause_on">إيقاف تلقائي: تشغيل</string>
     <string name="auto_pause_off">إيقاف تلقائي: إيقاف</string>
+    <string name="info_auto_pause_body">يوقف اكتشاف الرميات تلقائيًا لفترة بعد انتهاء مجموعة، حتى لا يُحتسب التوجه إلى الهدف أو التعامل مع السهام كرميات. يمكنك الاستئناف مبكرًا في أي وقت بزر الإيقاف المؤقت.</string>
     <string name="pause_duration_title">مدة الإيقاف المؤقت</string>
 
     <string name="power_saving_title">كفاءة الطاقة</string>
     <string name="power_saving_on">كفاءة الطاقة: تشغيل</string>
     <string name="power_saving_off">كفاءة الطاقة: إيقاف</string>
+    <string name="info_power_saving_body">يبقي الشاشة مضاءة أثناء الجلسة بدلاً من إيقافها، لكنه يعتم عليها لتوفير البطارية. عطّله لإبقاء السطوع كاملًا طوال الوقت (يستهلك بطارية أكثر).</string>
     <string name="use_aod_on">Always On Display: تشغيل</string>
     <string name="use_aod_off">Always On Display: إيقاف</string>
+    <string name="info_aod_body">أثناء تفعيل كفاءة الطاقة، يتيح هذا الخيار لميزة Always On Display الخاصة بالساعة التحكم في الشاشة المعتمة بدلاً من قيام التطبيق بتعتيمها يدويًا. يتطلب تفعيل Always On Display في إعدادات نظام الساعة ليعمل.</string>
     <string name="dim_brightness_title">سطوع التعتيم</string>
+    <string name="info_dim_brightness_body">مدى عتامة الشاشة أثناء الجلسة عند تفعيل كفاءة الطاقة وعدم استخدام Always On Display.</string>
 
     <string name="unit_accel">م/ث²</string>
     <string name="time_h">س</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">سيؤدي هذا إلى الكتابة فوق الجلسات ذات البيانات المطابقة. لا يمكن التراجع عن هذا.</string>
     <string name="import_confirm_ok">استيراد</string>
     <string name="import_confirm_cancel">إلغاء</string>
+
+    <string name="phone_sync_button">مزامنة البيانات</string>
+    <string name="phone_sync_success">تمت المزامنة، إجمالي %1$d جلسات</string>
+
+    <string name="clear_data_button">مسح البيانات</string>
+    <string name="clear_data_confirm_title">مسح جميع البيانات؟</string>
+    <string name="clear_data_confirm_message">سيؤدي هذا إلى حذف كل جلسة ورمية مخزنة على هذه الساعة. لن يؤثر هذا على الهاتف — قم بالمزامنة لاحقًا للاستعادة منه. لا يمكن التراجع عن هذا.</string>
+    <string name="clear_data_confirm_ok">مسح</string>
+    <string name="clear_data_confirm_cancel">إلغاء</string>
+    <string name="clear_data_success">تم المسح</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">ستبقى الشاشة مضاءة بشكل خافت أثناء الجلسة. فعّل خاصية Always On Display في إعدادات الساعة لعمر بطارية أفضل.</string>

@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_menu_detection">Algılama</string>
+    <string name="settings_menu_display">Ekran ve pil</string>
+    <string name="settings_menu_appearance_language">Görünüm ve dil</string>
+    <string name="info_dialog_dismiss">Anladım</string>
+
     <string name="status_ready">Hazır</string>
     <string name="status_detecting">Algılıyor</string>
     <string name="status_paused">Duraklatıldı</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">Orta (13 m/s²)</string>
     <string name="sensitivity_low">Düşük (20 m/s²)</string>
     <string name="sensitivity_custom">Özel</string>
+    <string name="info_sensitivity_body">Saati takan kolun ne kadar sert bir hareketinin bir atış olarak sayılması gerektiği. Daha yüksek bir sayı (20 gibi) daha sert bir hareket gerektirir ve hafif sallanmaları yok sayar; daha düşük bir sayı (8 gibi) daha yumuşak bırakışları yakalar ama kolun rastgele hareketinden de tetiklenebilir.</string>
 
     <string name="cooldown_title">Atış gecikmesi</string>
+    <string name="info_cooldown_body">Sayılan bir atıştan sonra bir sonrakinin kaydedilebilmesi için gereken en kısa süre. Bir bırakışın devam eden titreşiminin iki atış olarak sayılmasını önler.</string>
 
     <string name="lang_section_title">Dil</string>
     <string name="lang_system">Sistem</string>
 
+    <string name="appearance_title">Görünüm</string>
+    <string name="theme_brass">Pirinç</string>
+    <string name="theme_forest">Orman</string>
+    <string name="theme_target">Hedef</string>
+    <string name="theme_steel">Çelik</string>
+    <string name="theme_neon">Neon</string>
+    <string name="theme_parchment">Parşömen</string>
+    <string name="counter_size_title">Sayaç boyutu</string>
+    <string name="counter_size_small">Küçük</string>
+    <string name="counter_size_medium">Orta</string>
+    <string name="counter_size_large">Büyük</string>
+
     <string name="series_title">Seri</string>
     <string name="series_off">Kapalı</string>
+    <string name="info_series_body">Atışlarını bu boyutta serilere gruplar. Sayaç mevcut seri içindeki ilerlemeyi gösterir ve seri dolduğunda otomatik olarak yenisini başlatır. Gruplamadan sadece atış saymak için "Kapalı" seçin.</string>
     <string name="auto_pause_title">Otomatik duraklama</string>
     <string name="auto_pause_on">Otomatik duraklama: Açık</string>
     <string name="auto_pause_off">Otomatik duraklama: Kapalı</string>
+    <string name="info_auto_pause_body">Bir seri bittiğinde atış algılamayı bir süreliğine otomatik olarak duraklatır, böylece hedefe yürümek veya oklarla uğraşmak atış olarak sayılmaz. Duraklat düğmesiyle istediğin zaman erken devam edebilirsin.</string>
     <string name="pause_duration_title">Duraklama süresi</string>
 
     <string name="power_saving_title">Enerji verimliliği</string>
     <string name="power_saving_on">Enerji verimliliği: Açık</string>
     <string name="power_saving_off">Enerji verimliliği: Kapalı</string>
+    <string name="info_power_saving_body">Oturum sırasında ekranın uyumasını önleyip açık tutar, ancak pil tasarrufu için karartır. Ekranı sürekli tam parlaklıkta tutmak için kapat (daha fazla pil tüketir).</string>
     <string name="use_aod_on">Always On Display: Açık</string>
     <string name="use_aod_off">Always On Display: Kapalı</string>
+    <string name="info_aod_body">Enerji verimliliği açıkken bu seçenek, karartılmış ekranı uygulamanın kendisi yerine saatin kendi Always On Display özelliğinin yönetmesini sağlar. Etkili olması için saatin sistem ayarlarında Always On Display\'in açık olması gerekir.</string>
     <string name="dim_brightness_title">Karartma parlaklığı</string>
+    <string name="info_dim_brightness_body">Enerji verimliliği açıkken ve Always On Display kullanılmıyorken oturum sırasında ekranın ne kadar karardığı.</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">s</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">Eşleşen oturumların üzerine yazılacak. Bu işlem geri alınamaz.</string>
     <string name="import_confirm_ok">İçe aktar</string>
     <string name="import_confirm_cancel">İptal</string>
+
+    <string name="phone_sync_button">Verileri senkronize et</string>
+    <string name="phone_sync_success">Senkronize edildi, toplam %1$d oturum</string>
+
+    <string name="clear_data_button">Verileri temizle</string>
+    <string name="clear_data_confirm_title">Tüm veriler temizlensin mi?</string>
+    <string name="clear_data_confirm_message">Bu saatte depolanan tüm oturumları ve atışları siler. Telefonu etkilemez — oradan geri yüklemek için daha sonra senkronize edin. Bu geri alınamaz.</string>
+    <string name="clear_data_confirm_ok">Temizle</string>
+    <string name="clear_data_confirm_cancel">İptal</string>
+    <string name="clear_data_success">Temizlendi</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">Antrenman sırasında ekran sönük şekilde açık kalır. Daha iyi pil ömrü için saat ayarlarından Always On Display\'i etkinleştir.</string>

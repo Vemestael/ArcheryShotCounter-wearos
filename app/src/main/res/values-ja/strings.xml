@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">設定</string>
+    <string name="settings_menu_detection">検出</string>
+    <string name="settings_menu_display">画面とバッテリー</string>
+    <string name="settings_menu_appearance_language">外観と言語</string>
+    <string name="info_dialog_dismiss">わかりました</string>
+
     <string name="status_ready">準備完了</string>
     <string name="status_detecting">検出中</string>
     <string name="status_paused">一時停止</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">中 (13 m/s²)</string>
     <string name="sensitivity_low">低 (20 m/s²)</string>
     <string name="sensitivity_custom">カスタム</string>
+    <string name="info_sensitivity_body">時計をつけた腕の振りがどれくらい鋭いと1射としてカウントされるか。数値が大きいほど（例: 20）鋭い動きが必要になり、軽い振りは無視されます。数値が小さいほど（例: 8）柔らかいリリースも拾いますが、ふとした腕の動きで誤検知することがあります。</string>
 
     <string name="cooldown_title">ショット間隔</string>
+    <string name="info_cooldown_body">1射をカウントしてから次の射をカウントできるまでの最短時間。リリース後の余韻の振動が2射として数えられるのを防ぎます。</string>
 
     <string name="lang_section_title">言語</string>
     <string name="lang_system">システム</string>
 
+    <string name="appearance_title">外観</string>
+    <string name="theme_brass">真鍮</string>
+    <string name="theme_forest">森</string>
+    <string name="theme_target">的</string>
+    <string name="theme_steel">スチール</string>
+    <string name="theme_neon">ネオン</string>
+    <string name="theme_parchment">羊皮紙</string>
+    <string name="counter_size_title">カウンターサイズ</string>
+    <string name="counter_size_small">小</string>
+    <string name="counter_size_medium">中</string>
+    <string name="counter_size_large">大</string>
+
     <string name="series_title">シリーズ</string>
     <string name="series_off">オフ</string>
+    <string name="info_series_body">指定した本数ごとに射をエンドにまとめます。カウンターは現在のエンド内の進行状況を表示し、エンドが満了すると自動的に次のエンドを開始します。「オフ」にするとグループ化せずに射数だけをカウントします。</string>
     <string name="auto_pause_title">自動一時停止</string>
     <string name="auto_pause_on">自動一時停止：オン</string>
     <string name="auto_pause_off">自動一時停止：オフ</string>
+    <string name="info_auto_pause_body">エンドが終わると一定時間、射の検出を自動的に一時停止し、的へ歩いたり矢を扱ったりする動作が射としてカウントされないようにします。一時停止ボタンでいつでも早めに再開できます。</string>
     <string name="pause_duration_title">一時停止時間</string>
 
     <string name="power_saving_title">省電力</string>
     <string name="power_saving_on">省電力：オン</string>
     <string name="power_saving_off">省電力：オフ</string>
+    <string name="info_power_saving_body">セッション中に画面をスリープさせず点灯させたままにしますが、バッテリーを節約するために暗くします。オフにすると常に最大輝度のままになります（バッテリー消費が増えます）。</string>
     <string name="use_aod_on">Always On Display：オン</string>
     <string name="use_aod_off">Always On Display：オフ</string>
+    <string name="info_aod_body">省電力がオンの間、このオプションをオンにすると、アプリ側で手動で暗くする代わりに、時計本体のAlways On Displayが暗い画面の表示を担当します。有効にするには時計のシステム設定でAlways On Displayをオンにしておく必要があります。</string>
     <string name="dim_brightness_title">減光の明るさ</string>
+    <string name="info_dim_brightness_body">省電力がオンでAlways On Displayを使用していないとき、セッション中に画面がどれくらい暗くなるか。</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">時間</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">一致するセッションは上書きされます。この操作は元に戻せません。</string>
     <string name="import_confirm_ok">インポート</string>
     <string name="import_confirm_cancel">キャンセル</string>
+
+    <string name="phone_sync_button">データを同期</string>
+    <string name="phone_sync_success">同期しました。合計%1$d件のセッション</string>
+
+    <string name="clear_data_button">データを消去</string>
+    <string name="clear_data_confirm_title">すべてのデータを消去しますか？</string>
+    <string name="clear_data_confirm_message">この時計に保存されているすべてのセッションとショットを削除します。携帯電話には影響しません — 後で同期すれば復元できます。元に戻せません。</string>
+    <string name="clear_data_confirm_ok">消去</string>
+    <string name="clear_data_confirm_cancel">キャンセル</string>
+    <string name="clear_data_success">消去しました</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">トレーニング中は画面が暗いまま点灯し続けます。バッテリーをより長持ちさせるには、時計の設定でAlways On Displayを有効にしてください。</string>

@@ -48,7 +48,8 @@ fun MainScreen(
     onPrimaryButton: () -> Unit,
     onSecondaryButton: () -> Unit,
     onEnd: () -> Unit,
-    onManualAdjust: (Int) -> Unit
+    onManualAdjust: (Int) -> Unit,
+    counterSize: CounterSize = CounterSize.SMALL
 ) {
     val sessionExists = currentSession != null
     val pausedLabel = stringResource(R.string.status_paused)
@@ -120,9 +121,9 @@ fun MainScreen(
                         val effectivePrev = if (shotCount == prevBoundary && prevBoundary > 0) prevBoundary - shotsPerEnd else prevBoundary
                         val leftDelta = shotCount - effectivePrev
                         val rightDelta = nextBoundary - shotCount
-                        ShotCounterDisplay(count = shotCount, leftDelta = leftDelta, rightDelta = rightDelta)
+                        ShotCounterDisplay(count = shotCount, leftDelta = leftDelta, rightDelta = rightDelta, fontSize = counterSize.fontSizeSp.sp)
                     } else {
-                        ShotCounterDisplay(count = shotCount)
+                        ShotCounterDisplay(count = shotCount, fontSize = counterSize.fontSizeSp.sp)
                     }
                     Text(
                         text = stringResource(R.string.shots_label),
@@ -205,7 +206,7 @@ fun MainScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TimerIcon(
-                                color = LocalAppPalette.current.textDim,
+                                color = LocalAppPalette.current.buttonTextDim,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))

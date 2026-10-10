@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_menu_detection">पहचान</string>
+    <string name="settings_menu_display">स्क्रीन और बैटरी</string>
+    <string name="settings_menu_appearance_language">रूप और भाषा</string>
+    <string name="info_dialog_dismiss">समझ गया</string>
+
     <string name="status_ready">तैयार</string>
     <string name="status_detecting">पहचान</string>
     <string name="status_paused">रुका हुआ</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">मध्यम (13 m/s²)</string>
     <string name="sensitivity_low">कम (20 m/s²)</string>
     <string name="sensitivity_custom">कस्टम</string>
+    <string name="info_sensitivity_body">घड़ी पहने हाथ का झटका कितना तेज़ होना चाहिए ताकि वह एक शॉट के रूप में गिना जाए। ज़्यादा संख्या (जैसे 20) को तेज़ हरकत की ज़रूरत होती है और हल्की हलचल को नज़रअंदाज़ करती है; कम संख्या (जैसे 8) हल्के रिलीज़ भी पकड़ लेती है, लेकिन हाथ की किसी भी हरकत से गलत ट्रिगर हो सकती है।</string>
 
     <string name="cooldown_title">शॉट्स के बीच विलंब</string>
+    <string name="info_cooldown_body">एक गिने गए शॉट के बाद अगला शॉट दर्ज होने में लगने वाला न्यूनतम समय। इससे एक रिलीज़ की बाकी बची कंपन दो शॉट के रूप में नहीं गिनी जाती।</string>
 
     <string name="lang_section_title">भाषा</string>
     <string name="lang_system">सिस्टम</string>
 
+    <string name="appearance_title">रूप</string>
+    <string name="theme_brass">पीतल</string>
+    <string name="theme_forest">वन</string>
+    <string name="theme_target">लक्ष्य</string>
+    <string name="theme_steel">स्टील</string>
+    <string name="theme_neon">नियॉन</string>
+    <string name="theme_parchment">चर्मपत्र</string>
+    <string name="counter_size_title">काउंटर आकार</string>
+    <string name="counter_size_small">छोटा</string>
+    <string name="counter_size_medium">मध्यम</string>
+    <string name="counter_size_large">बड़ा</string>
+
     <string name="series_title">श्रृंखला</string>
     <string name="series_off">बंद</string>
+    <string name="info_series_body">आपके शॉट्स को इतने आकार के एंड में समूहित करता है। काउंटर मौजूदा एंड में प्रगति दिखाता है और पूरा होने पर अपने आप नया एंड शुरू कर देता है। बिना समूहीकरण के सिर्फ शॉट गिनने के लिए "बंद" चुनें।</string>
     <string name="auto_pause_title">स्वतः विराम</string>
     <string name="auto_pause_on">स्वतः विराम: चालू</string>
     <string name="auto_pause_off">स्वतः विराम: बंद</string>
+    <string name="info_auto_pause_body">एक एंड पूरा होने पर कुछ समय के लिए शॉट पहचान को अपने आप रोक देता है, ताकि लक्ष्य तक चलना या तीर संभालना शॉट के रूप में न गिना जाए। पॉज़ बटन से कभी भी जल्दी फिर से शुरू किया जा सकता है।</string>
     <string name="pause_duration_title">विराम अवधि</string>
 
     <string name="power_saving_title">ऊर्जा दक्षता</string>
     <string name="power_saving_on">ऊर्जा दक्षता: चालू</string>
     <string name="power_saving_off">ऊर्जा दक्षता: बंद</string>
+    <string name="info_power_saving_body">सत्र के दौरान स्क्रीन को सोने नहीं देता, लेकिन बैटरी बचाने के लिए उसे धीमा कर देता है। हमेशा पूरी चमक बनाए रखने के लिए इसे बंद करें (इससे बैटरी ज़्यादा खर्च होती है)।</string>
     <string name="use_aod_on">Always On Display: चालू</string>
     <string name="use_aod_off">Always On Display: बंद</string>
+    <string name="info_aod_body">जब ऊर्जा दक्षता चालू हो, तो यह विकल्प धीमी स्क्रीन को ऐप के बजाय घड़ी के अपने Always On Display को संभालने देता है। काम करने के लिए घड़ी की सिस्टम सेटिंग्स में Always On Display चालू होना ज़रूरी है।</string>
     <string name="dim_brightness_title">मंद चमक</string>
+    <string name="info_dim_brightness_body">जब ऊर्जा दक्षता चालू हो और Always On Display का उपयोग न हो रहा हो, तो सत्र के दौरान स्क्रीन कितनी धीमी हो जाती है।</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">घं</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">इससे मेल खाते डेटा वाले सत्र अधिलेखित हो जाएंगे। इसे पूर्ववत नहीं किया जा सकता।</string>
     <string name="import_confirm_ok">आयात करें</string>
     <string name="import_confirm_cancel">रद्द करें</string>
+
+    <string name="phone_sync_button">डेटा सिंक करें</string>
+    <string name="phone_sync_success">सिंक हो गया, कुल %1$d सेशन</string>
+
+    <string name="clear_data_button">डेटा मिटाएं</string>
+    <string name="clear_data_confirm_title">सारा डेटा मिटाएं?</string>
+    <string name="clear_data_confirm_message">इस घड़ी पर सहेजे गए सभी सेशन और शॉट्स हटा देगा। इससे फ़ोन पर असर नहीं पड़ेगा — बाद में सिंक करके वहां से बहाल करें। इसे पूर्ववत नहीं किया जा सकता।</string>
+    <string name="clear_data_confirm_ok">मिटाएं</string>
+    <string name="clear_data_confirm_cancel">रद्द करें</string>
+    <string name="clear_data_success">मिटाया गया</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">सत्र के दौरान स्क्रीन धीमी चमक के साथ चालू रहेगी। बेहतर बैटरी लाइफ के लिए घड़ी की सेटिंग्स में Always On Display चालू करें।</string>

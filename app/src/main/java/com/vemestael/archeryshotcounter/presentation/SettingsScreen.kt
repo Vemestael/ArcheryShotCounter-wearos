@@ -1,10 +1,22 @@
 package com.vemestael.archeryshotcounter.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,8 +28,10 @@ import androidx.wear.compose.material3.Text
 import com.vemestael.archeryshotcounter.R
 import com.vemestael.archeryshotcounter.presentation.theme.AppButton
 import com.vemestael.archeryshotcounter.presentation.theme.AppListScreen
+import com.vemestael.archeryshotcounter.presentation.theme.AppSwitchButton
 import com.vemestael.archeryshotcounter.presentation.theme.ListBottomSpacer
 import com.vemestael.archeryshotcounter.presentation.theme.LocalAppPalette
+import com.vemestael.archeryshotcounter.presentation.theme.PaletteChoice
 import com.vemestael.archeryshotcounter.presentation.theme.SectionTitle
 import com.vemestael.archeryshotcounter.presentation.theme.Stepper
 
@@ -37,37 +51,91 @@ enum class AppLanguage(val code: String, val nativeName: String, val englishName
     HINDI("hi", "हिन्दी", "Hindi")
 }
 
+/** The shot counter's digit size, chosen in Settings → Appearance. */
+enum class CounterSize(@param:StringRes val labelRes: Int, val fontSizeSp: Int) {
+    SMALL(R.string.counter_size_small, 52),
+    MEDIUM(R.string.counter_size_medium, 62),
+    LARGE(R.string.counter_size_large, 72)
+}
+
+/** Top-level Settings page: a short menu of sub-sections, shown directly in the main pager. */
 @Composable
-fun SettingsScreen(
-    sensitivity: Sensitivity,
-    customThreshold: Int,
-    currentLanguage: AppLanguage,
-    shotCooldownSeconds: Int,
-    shotsPerEnd: Int,
-    autoPauseEnabled: Boolean,
-    autoPauseDuration: Int,
-    powerSavingEnabled: Boolean,
-    useSystemAod: Boolean,
-    dimBrightnessPercent: Int,
-    phoneSyncStatus: String?,
-    onSensitivityChange: (Sensitivity) -> Unit,
-    onCustomThresholdChange: (Int) -> Unit,
-    onShowLanguagePicker: () -> Unit,
-    onShotCooldownChange: (Int) -> Unit,
-    onShotsPerEndChange: (Int) -> Unit,
-    onAutoPauseEnabledChange: (Boolean) -> Unit,
-    onAutoPauseDurationChange: (Int) -> Unit,
-    onPowerSavingEnabledChange: (Boolean) -> Unit,
-    onUseSystemAodChange: (Boolean) -> Unit,
-    onDimBrightnessPercentChange: (Int) -> Unit,
-    onSyncData: () -> Unit,
-    onClearData: () -> Unit
+fun SettingsMenuScreen(
+    onShowDetection: () -> Unit,
+    onShowDisplay: () -> Unit,
+    onShowAppearanceLanguage: () -> Unit,
+    onShowData: () -> Unit
 ) {
     AppListScreen { transformationSpec ->
         item {
             SectionTitle(
-                text = stringResource(R.string.sensitivity_title),
+                text = stringResource(R.string.settings_title),
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp)
+            )
+        }
+        item {
+            AppButton(
+                text = stringResource(R.string.settings_menu_detection),
+                onClick = onShowDetection,
+                scope = this,
+                transformationSpec = transformationSpec
+            )
+        }
+        item {
+            AppButton(
+                text = stringResource(R.string.settings_menu_display),
+                onClick = onShowDisplay,
+                scope = this,
+                transformationSpec = transformationSpec
+            )
+        }
+        item {
+            AppButton(
+                text = stringResource(R.string.settings_menu_appearance_language),
+                onClick = onShowAppearanceLanguage,
+                scope = this,
+                transformationSpec = transformationSpec
+            )
+        }
+        item {
+            AppButton(
+                text = stringResource(R.string.export_title),
+                onClick = onShowData,
+                scope = this,
+                transformationSpec = transformationSpec
+            )
+        }
+        item {
+            ListBottomSpacer()
+        }
+    }
+}
+
+@Composable
+fun DetectionSettingsScreen(
+    sensitivity: Sensitivity,
+    customThreshold: Int,
+    shotCooldownSeconds: Int,
+    shotsPerEnd: Int,
+    autoPauseEnabled: Boolean,
+    autoPauseDuration: Int,
+    onSensitivityChange: (Sensitivity) -> Unit,
+    onCustomThresholdChange: (Int) -> Unit,
+    onShotCooldownChange: (Int) -> Unit,
+    onShotsPerEndChange: (Int) -> Unit,
+    onAutoPauseEnabledChange: (Boolean) -> Unit,
+    onAutoPauseDurationChange: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    BackHandler(onBack = onDismiss)
+    var infoDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+
+    AppListScreen(fillBackground = true) { transformationSpec ->
+        item {
+            SectionTitle(
+                text = stringResource(R.string.sensitivity_title),
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp),
+                onInfoClick = { infoDialog = R.string.sensitivity_title to R.string.info_sensitivity_body }
             )
         }
 
@@ -105,7 +173,10 @@ fun SettingsScreen(
         }
 
         item {
-            SectionTitle(text = stringResource(R.string.cooldown_title))
+            SectionTitle(
+                text = stringResource(R.string.cooldown_title),
+                onInfoClick = { infoDialog = R.string.cooldown_title to R.string.info_cooldown_body }
+            )
         }
 
         item {
@@ -117,7 +188,10 @@ fun SettingsScreen(
         }
 
         item {
-            SectionTitle(text = stringResource(R.string.series_title))
+            SectionTitle(
+                text = stringResource(R.string.series_title),
+                onInfoClick = { infoDialog = R.string.series_title to R.string.info_series_body }
+            )
         }
 
         item {
@@ -130,10 +204,11 @@ fun SettingsScreen(
 
         if (shotsPerEnd > 0) {
             item {
-                AppButton(
-                    text = stringResource(if (autoPauseEnabled) R.string.auto_pause_on else R.string.auto_pause_off),
-                    onClick = { onAutoPauseEnabledChange(!autoPauseEnabled) },
-                    selected = autoPauseEnabled,
+                AppSwitchButton(
+                    checked = autoPauseEnabled,
+                    onCheckedChange = onAutoPauseEnabledChange,
+                    text = stringResource(R.string.auto_pause_title),
+                    onInfoClick = { infoDialog = R.string.auto_pause_title to R.string.info_auto_pause_body },
                     scope = this,
                     transformationSpec = transformationSpec
                 )
@@ -158,14 +233,45 @@ fun SettingsScreen(
         }
 
         item {
-            SectionTitle(text = stringResource(R.string.power_saving_title))
+            ListBottomSpacer()
         }
+    }
 
+    infoDialog?.let { (titleRes, bodyRes) ->
+        InfoDialog(
+            title = stringResource(titleRes),
+            body = stringResource(bodyRes),
+            onDismiss = { infoDialog = null }
+        )
+    }
+}
+
+@Composable
+fun DisplaySettingsScreen(
+    powerSavingEnabled: Boolean,
+    useSystemAod: Boolean,
+    dimBrightnessPercent: Int,
+    onPowerSavingEnabledChange: (Boolean) -> Unit,
+    onUseSystemAodChange: (Boolean) -> Unit,
+    onDimBrightnessPercentChange: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    BackHandler(onBack = onDismiss)
+    var infoDialog by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+
+    AppListScreen(fillBackground = true) { transformationSpec ->
         item {
-            AppButton(
-                text = stringResource(if (powerSavingEnabled) R.string.power_saving_on else R.string.power_saving_off),
-                onClick = { onPowerSavingEnabledChange(!powerSavingEnabled) },
-                selected = powerSavingEnabled,
+            SectionTitle(
+                text = stringResource(R.string.settings_menu_display),
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp)
+            )
+        }
+        item {
+            AppSwitchButton(
+                checked = powerSavingEnabled,
+                onCheckedChange = onPowerSavingEnabledChange,
+                text = stringResource(R.string.power_saving_title),
+                onInfoClick = { infoDialog = R.string.power_saving_title to R.string.info_power_saving_body },
                 scope = this,
                 transformationSpec = transformationSpec
             )
@@ -173,11 +279,12 @@ fun SettingsScreen(
 
         if (powerSavingEnabled) {
             item {
-                AppButton(
-                    text = stringResource(if (useSystemAod) R.string.use_aod_on else R.string.use_aod_off),
-                    onClick = { onUseSystemAodChange(!useSystemAod) },
+                AppSwitchButton(
+                    checked = useSystemAod,
+                    onCheckedChange = onUseSystemAodChange,
+                    text = stringResource(R.string.aod_prompt_title),
+                    onInfoClick = { infoDialog = R.string.aod_prompt_title to R.string.info_aod_body },
                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                    selected = useSystemAod,
                     scope = this,
                     transformationSpec = transformationSpec
                 )
@@ -186,7 +293,8 @@ fun SettingsScreen(
             item {
                 SectionTitle(
                     text = stringResource(R.string.dim_brightness_title),
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp)
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp),
+                    onInfoClick = { infoDialog = R.string.dim_brightness_title to R.string.info_dim_brightness_body }
                 )
             }
             item {
@@ -199,7 +307,37 @@ fun SettingsScreen(
         }
 
         item {
-            SectionTitle(text = stringResource(R.string.lang_section_title))
+            ListBottomSpacer()
+        }
+    }
+
+    infoDialog?.let { (titleRes, bodyRes) ->
+        InfoDialog(
+            title = stringResource(titleRes),
+            body = stringResource(bodyRes),
+            onDismiss = { infoDialog = null }
+        )
+    }
+}
+
+@Composable
+fun AppearanceLanguageSettingsScreen(
+    currentLanguage: AppLanguage,
+    paletteChoice: PaletteChoice,
+    counterSize: CounterSize,
+    onShowLanguagePicker: () -> Unit,
+    onShowThemePicker: () -> Unit,
+    onShowCounterSizePicker: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    BackHandler(onBack = onDismiss)
+
+    AppListScreen(fillBackground = true) { transformationSpec ->
+        item {
+            SectionTitle(
+                text = stringResource(R.string.lang_section_title),
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp)
+            )
         }
 
         item {
@@ -216,7 +354,76 @@ fun SettingsScreen(
         }
 
         item {
-            SectionTitle(text = stringResource(R.string.export_title))
+            SectionTitle(
+                text = stringResource(R.string.appearance_title),
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp)
+            )
+        }
+
+        item {
+            AppButton(
+                onClick = onShowThemePicker,
+                scope = this,
+                transformationSpec = transformationSpec
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .background(
+                                color = paletteChoice.palette.accent,
+                                shape = RoundedCornerShape(2.dp)
+                            )
+                    )
+                    Text(
+                        text = stringResource(paletteChoice.labelRes),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+        }
+
+        item {
+            SectionTitle(
+                text = stringResource(R.string.counter_size_title),
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp)
+            )
+        }
+
+        item {
+            AppButton(
+                text = stringResource(counterSize.labelRes),
+                onClick = onShowCounterSizePicker,
+                scope = this,
+                transformationSpec = transformationSpec
+            )
+        }
+
+        item {
+            ListBottomSpacer()
+        }
+    }
+}
+
+@Composable
+fun DataSettingsScreen(
+    phoneSyncStatus: String?,
+    onSyncData: () -> Unit,
+    onClearData: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    BackHandler(onBack = onDismiss)
+
+    AppListScreen(fillBackground = true) { transformationSpec ->
+        item {
+            SectionTitle(
+                text = stringResource(R.string.export_title),
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp)
+            )
         }
 
         item {
@@ -307,6 +514,81 @@ fun LanguagePickerScreen(
                         }
                     }
                 }
+            }
+        }
+        item {
+            ListBottomSpacer()
+        }
+    }
+}
+
+@Composable
+fun ThemePickerScreen(
+    currentPalette: PaletteChoice,
+    onSelect: (PaletteChoice) -> Unit,
+    onDismiss: () -> Unit
+) {
+    BackHandler(onBack = onDismiss)
+
+    AppListScreen(fillBackground = true) { transformationSpec ->
+        PaletteChoice.entries.forEach { choice ->
+            item {
+                AppButton(
+                    onClick = { onSelect(choice) },
+                    selected = currentPalette == choice,
+                    scope = this,
+                    transformationSpec = transformationSpec
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = stringResource(choice.labelRes))
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            listOf(
+                                choice.palette.bg,
+                                choice.palette.bgElev,
+                                choice.palette.accent,
+                                choice.palette.pause,
+                                choice.palette.active
+                            ).forEach { color ->
+                                Box(
+                                    modifier = Modifier
+                                        .size(12.dp)
+                                        .border(1.dp, choice.palette.line, RoundedCornerShape(3.dp))
+                                        .background(color = color, shape = RoundedCornerShape(3.dp))
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            ListBottomSpacer()
+        }
+    }
+}
+
+@Composable
+fun CounterSizePickerScreen(
+    currentSize: CounterSize,
+    onSelect: (CounterSize) -> Unit,
+    onDismiss: () -> Unit
+) {
+    BackHandler(onBack = onDismiss)
+
+    AppListScreen(fillBackground = true) { transformationSpec ->
+        CounterSize.entries.forEach { size ->
+            item {
+                AppButton(
+                    text = stringResource(size.labelRes),
+                    onClick = { onSelect(size) },
+                    selected = currentSize == size,
+                    scope = this,
+                    transformationSpec = transformationSpec
+                )
             }
         }
         item {

@@ -9,9 +9,9 @@ import androidx.wear.compose.material3.Typography
 
 @Composable
 fun ArcheryShotCounterTheme(
+    palette: AppPalette = BrassPalette,
     content: @Composable () -> Unit
 ) {
-    val palette = BrassPalette
     CompositionLocalProvider(LocalAppPalette provides palette) {
         MaterialTheme(
             colorScheme = palette.toColorScheme(),

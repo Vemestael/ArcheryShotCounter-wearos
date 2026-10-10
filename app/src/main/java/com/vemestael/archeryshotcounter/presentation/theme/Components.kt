@@ -2,6 +2,7 @@ package com.vemestael.archeryshotcounter.presentation.theme
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,9 +48,12 @@ import androidx.wear.compose.foundation.lazy.TransformingLazyColumnState
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.ButtonDefaults
+import androidx.wear.compose.material3.LocalContentColor
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.SurfaceTransformation
+import androidx.wear.compose.material3.SwitchButton
+import androidx.wear.compose.material3.SwitchButtonDefaults
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.lazy.TransformationSpec
@@ -60,21 +66,81 @@ import androidx.wear.compose.material3.lazy.transformedHeight
  * (see [AppButton]). Default modifier matches the common Settings-screen spacing (centered,
  * top 12dp / bottom 4dp); pass a different one for dialogs (already centered by their own
  * Column) or where spacing differs.
+ *
+ * Pass [onInfoClick] to add a small ⓘ next to the title that opens an explanatory dialog — for
+ * settings whose effect isn't obvious from their name alone (see [InfoButton]).
  */
 @Composable
 fun SectionTitle(
     text: String,
     modifier: Modifier = Modifier
         .fillMaxWidth()
-        .padding(top = 12.dp, bottom = 4.dp)
+        .padding(top = 12.dp, bottom = 4.dp),
+    onInfoClick: (() -> Unit)? = null
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleSmall,
-            color = LocalAppPalette.current.text,
-            textAlign = TextAlign.Center
+        if (onInfoClick != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = LocalAppPalette.current.text,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                InfoButton(onClick = onInfoClick, color = LocalAppPalette.current.textDim)
+            }
+        } else {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleSmall,
+                color = LocalAppPalette.current.text,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+/**
+ * A hand-drawn "ⓘ" glyph — a ring, a dot and a stem — matching [PlayPauseIcon]/[TimerIcon]'s
+ * approach of drawing small glyphs instead of pulling in an icon library.
+ */
+@Composable
+fun InfoIcon(color: Color, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val strokeWidth = size.minDimension * 0.09f
+        val radius = size.minDimension * 0.42f
+        val center = Offset(size.width / 2f, size.height / 2f)
+        drawCircle(color = color, radius = radius, center = center, style = Stroke(width = strokeWidth))
+        drawCircle(color = color, radius = size.minDimension * 0.07f, center = Offset(center.x, center.y - radius * 0.42f))
+        drawLine(
+            color = color,
+            start = Offset(center.x, center.y - radius * 0.02f),
+            end = Offset(center.x, center.y + radius * 0.55f),
+            strokeWidth = strokeWidth,
+            cap = StrokeCap.Round
         )
+    }
+}
+
+/**
+ * A tappable [InfoIcon] with a touch target comfortably larger than the glyph itself, for use
+ * next to a setting's title/label. Opens the setting's explanatory [InfoDialog] when tapped.
+ */
+@Composable
+fun InfoButton(onClick: () -> Unit, color: Color, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(20.dp)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        InfoIcon(color = color, modifier = Modifier.size(13.dp))
     }
 }
 
@@ -103,7 +169,7 @@ fun AppButton(
         selected -> LocalAppPalette.current.accent
         else -> LocalAppPalette.current.bgElev2
     },
-    contentColor: Color = if (selected || destructive) LocalAppPalette.current.onAccent else LocalAppPalette.current.textDim,
+    contentColor: Color = if (selected || destructive) LocalAppPalette.current.onAccent else LocalAppPalette.current.buttonTextDim,
     disabledContainerColor: Color = LocalAppPalette.current.bgElev2,
     disabledContentColor: Color = LocalAppPalette.current.textMuted,
     shape: Shape = ButtonDefaults.shape,
@@ -149,7 +215,7 @@ fun AppButton(
         selected -> LocalAppPalette.current.accent
         else -> LocalAppPalette.current.bgElev2
     },
-    contentColor: Color = if (selected || destructive) LocalAppPalette.current.onAccent else LocalAppPalette.current.textDim,
+    contentColor: Color = if (selected || destructive) LocalAppPalette.current.onAccent else LocalAppPalette.current.buttonTextDim,
     disabledContainerColor: Color = LocalAppPalette.current.bgElev2,
     disabledContentColor: Color = LocalAppPalette.current.textMuted,
     fontWeight: FontWeight? = null,
@@ -184,6 +250,67 @@ fun AppButton(
             modifier = Modifier.fillMaxWidth()
         )
     }
+}
+
+/**
+ * A labeled on/off row with a trailing switch, for boolean settings (energy efficiency, Always On
+ * Display, auto-pause). Colors come from Wear Material3's own [SwitchButton] defaults, which read
+ * the app's palette through [androidx.wear.compose.material3.MaterialTheme]'s color scheme (see
+ * `AppPalette.toColorScheme()`), so it stays on-theme without passing colors explicitly.
+ *
+ * Pass [scope] and [transformationSpec] the same way as [AppButton] for a full-width item inside a
+ * `TransformingLazyColumn`.
+ */
+@Composable
+fun AppSwitchButton(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    text: String,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    onInfoClick: (() -> Unit)? = null,
+    scope: TransformingLazyColumnItemScope? = null,
+    transformationSpec: TransformationSpec? = null
+) {
+    val sizedModifier = if (scope != null && transformationSpec != null)
+        modifier.transformedHeight(scope, transformationSpec)
+    else
+        modifier
+    val surfaceTransformation = if (scope != null && transformationSpec != null)
+        scope.SurfaceTransformation(transformationSpec)
+    else
+        null
+    // The stock checked colors pull container/track/thumb all from the same "primary" role,
+    // which our palette maps to a single accent color — the thumb disappears into the track.
+    // Give the checked thumb a palette-matched, contrasting color so it's visible.
+    val palette = LocalAppPalette.current
+    val colors = SwitchButtonDefaults.switchButtonColors().copy(
+        checkedThumbColor = palette.onAccent,
+        checkedThumbIconColor = palette.accent,
+        checkedTrackColor = palette.accent,
+        checkedTrackBorderColor = palette.onAccent
+    )
+    SwitchButton(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = sizedModifier,
+        colors = colors,
+        transformation = surfaceTransformation,
+        label = {
+            if (onInfoClick != null) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text, modifier = Modifier.weight(1f, fill = false))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    InfoButton(onClick = onInfoClick, color = LocalContentColor.current)
+                }
+            } else {
+                Text(text)
+            }
+        }
+    )
 }
 
 /**
@@ -350,6 +477,11 @@ fun AppDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = Modifier
+                // Capped well below the screen's full diameter: a card this wide would get its
+                // corners clipped by the round bezel wherever it isn't vertically centered (long
+                // bodies push the top/first line up into the curve — see the Sensitivity info
+                // dialog, which used to lose a few characters on each edge of its first line).
+                .widthIn(max = 180.dp)
                 .clip(RoundedCornerShape(cornerRadius))
                 .background(LocalAppPalette.current.bgElev)
                 .verticalScroll(rememberScrollState())

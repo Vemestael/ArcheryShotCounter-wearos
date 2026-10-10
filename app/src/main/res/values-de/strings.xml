@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_menu_detection">Erkennung</string>
+    <string name="settings_menu_display">Display &amp; Akku</string>
+    <string name="settings_menu_appearance_language">Erscheinungsbild &amp; Sprache</string>
+    <string name="info_dialog_dismiss">Verstanden</string>
+
     <string name="status_ready">Bereit</string>
     <string name="status_detecting">Erkennung</string>
     <string name="status_paused">Pausiert</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">Mittel (13 m/s²)</string>
     <string name="sensitivity_low">Niedrig (20 m/s²)</string>
     <string name="sensitivity_custom">Benutzerdefiniert</string>
+    <string name="info_sensitivity_body">Wie ruckartig die Bewegung des Arms mit der Uhr sein muss, um als Schuss zu zählen. Eine höhere Zahl (z. B. 20) braucht eine stärkere Bewegung und ignoriert leichte Schwünge; eine niedrigere Zahl (z. B. 8) erfasst sanftere Releases, kann aber durch eine zufällige Armbewegung auslösen.</string>
 
     <string name="cooldown_title">Schussverzögerung</string>
+    <string name="info_cooldown_body">Die Mindestzeit nach einem gezählten Schuss, bevor der nächste registriert werden kann. Verhindert, dass die Nachschwingung eines Releases als zwei Schüsse gezählt wird.</string>
 
     <string name="lang_section_title">Sprache</string>
     <string name="lang_system">System</string>
 
+    <string name="appearance_title">Erscheinungsbild</string>
+    <string name="theme_brass">Messing</string>
+    <string name="theme_forest">Wald</string>
+    <string name="theme_target">Zielscheibe</string>
+    <string name="theme_steel">Stahl</string>
+    <string name="theme_neon">Neon</string>
+    <string name="theme_parchment">Pergament</string>
+    <string name="counter_size_title">Zählergröße</string>
+    <string name="counter_size_small">Klein</string>
+    <string name="counter_size_medium">Mittel</string>
+    <string name="counter_size_large">Groß</string>
+
     <string name="series_title">Serie</string>
     <string name="series_off">Aus</string>
+    <string name="info_series_body">Gruppiert deine Schüsse in Durchgängen dieser Größe. Der Zähler zeigt den Fortschritt im aktuellen Durchgang und beginnt automatisch einen neuen, sobald er voll ist. Auf „Aus“ stellen, um Schüsse einfach ohne Gruppierung zu zählen.</string>
     <string name="auto_pause_title">Auto-Pause</string>
     <string name="auto_pause_on">Auto-Pause: Ein</string>
     <string name="auto_pause_off">Auto-Pause: Aus</string>
+    <string name="info_auto_pause_body">Pausiert die Schusserkennung nach Abschluss eines Durchgangs automatisch für eine Weile, damit der Weg zur Scheibe oder das Hantieren mit Pfeilen nicht als Schüsse gezählt wird. Mit dem Pause-Button jederzeit früher fortsetzen.</string>
     <string name="pause_duration_title">Pausendauer</string>
 
     <string name="power_saving_title">Energieeffizienz</string>
     <string name="power_saving_on">Energieeffizienz: Ein</string>
     <string name="power_saving_off">Energieeffizienz: Aus</string>
+    <string name="info_power_saving_body">Hält den Bildschirm während einer Sitzung an, statt ihn einschlafen zu lassen, dimmt ihn aber zum Akkusparen. Deaktivieren, um die volle Helligkeit durchgehend beizubehalten (verbraucht mehr Akku).</string>
     <string name="use_aod_on">Always On Display: Ein</string>
     <string name="use_aod_off">Always On Display: Aus</string>
+    <string name="info_aod_body">Solange Energieeffizienz aktiviert ist, überlässt dies die gedimmte Anzeige dem eigenen Always On Display der Uhr, statt dass die App selbst dimmt. Dafür muss Always On Display in den Systemeinstellungen der Uhr aktiviert sein.</string>
     <string name="dim_brightness_title">Dimm-Helligkeit</string>
+    <string name="info_dim_brightness_body">Wie dunkel der Bildschirm während einer Sitzung wird, wenn Energieeffizienz aktiviert ist und kein Always On Display verwendet wird.</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">Std</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">Sitzungen mit übereinstimmenden Daten werden überschrieben. Dies kann nicht rückgängig gemacht werden.</string>
     <string name="import_confirm_ok">Importieren</string>
     <string name="import_confirm_cancel">Abbrechen</string>
+
+    <string name="phone_sync_button">Daten synchronisieren</string>
+    <string name="phone_sync_success">Synchronisiert, insgesamt %1$d Einheiten</string>
+
+    <string name="clear_data_button">Daten löschen</string>
+    <string name="clear_data_confirm_title">Alle Daten löschen?</string>
+    <string name="clear_data_confirm_message">Löscht alle auf dieser Uhr gespeicherten Einheiten und Schüsse. Das Telefon ist davon nicht betroffen — synchronisiere danach, um von dort wiederherzustellen. Das kann nicht rückgängig gemacht werden.</string>
+    <string name="clear_data_confirm_ok">Löschen</string>
+    <string name="clear_data_confirm_cancel">Abbrechen</string>
+    <string name="clear_data_success">Gelöscht</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">Der Bildschirm bleibt während einer Sitzung gedimmt eingeschaltet. Aktiviere Always On Display in den Uhreinstellungen für eine bessere Akkulaufzeit.</string>

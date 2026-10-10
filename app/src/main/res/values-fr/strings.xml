@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_menu_detection">Détection</string>
+    <string name="settings_menu_display">Écran et batterie</string>
+    <string name="settings_menu_appearance_language">Apparence et langue</string>
+    <string name="info_dialog_dismiss">Compris</string>
+
     <string name="status_ready">Prêt</string>
     <string name="status_detecting">Détection</string>
     <string name="status_paused">En pause</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">Moyenne (13 m/s²)</string>
     <string name="sensitivity_low">Basse (20 m/s²)</string>
     <string name="sensitivity_custom">Personnalisé</string>
+    <string name="info_sensitivity_body">À quel point le mouvement du bras portant la montre doit être brusque pour compter comme un tir. Un nombre plus élevé (comme 20) exige un mouvement plus brusque et ignore les mouvements légers ; un nombre plus bas (comme 8) détecte les lâchers plus doux, mais peut se déclencher sur un mouvement aléatoire du bras.</string>
 
     <string name="cooldown_title">Délai entre les tirs</string>
+    <string name="info_cooldown_body">Le délai minimum après un tir compté avant que le suivant puisse être enregistré. Empêche la vibration résiduelle d\'un lâcher d\'être comptée comme deux tirs.</string>
 
     <string name="lang_section_title">Langue</string>
     <string name="lang_system">Système</string>
 
+    <string name="appearance_title">Apparence</string>
+    <string name="theme_brass">Laiton</string>
+    <string name="theme_forest">Forêt</string>
+    <string name="theme_target">Cible</string>
+    <string name="theme_steel">Acier</string>
+    <string name="theme_neon">Néon</string>
+    <string name="theme_parchment">Parchemin</string>
+    <string name="counter_size_title">Taille du compteur</string>
+    <string name="counter_size_small">Petit</string>
+    <string name="counter_size_medium">Moyen</string>
+    <string name="counter_size_large">Grand</string>
+
     <string name="series_title">Série</string>
     <string name="series_off">Désactivé</string>
+    <string name="info_series_body">Regroupe vos tirs en volées de cette taille. Le compteur affiche la progression dans la volée en cours et en démarre une nouvelle automatiquement une fois celle-ci complète. Mettez sur « Désactivé » pour simplement compter les tirs sans regroupement.</string>
     <string name="auto_pause_title">Pause automatique</string>
     <string name="auto_pause_on">Pause automatique: Activée</string>
     <string name="auto_pause_off">Pause automatique: Désactivée</string>
+    <string name="info_auto_pause_body">Met automatiquement la détection en pause un moment à la fin d\'une volée, pour que marcher jusqu\'à la cible ou manipuler les flèches ne soit pas compté comme des tirs. Reprenez plus tôt à tout moment avec le bouton pause.</string>
     <string name="pause_duration_title">Durée de pause</string>
 
     <string name="power_saving_title">Efficacité énergétique</string>
     <string name="power_saving_on">Efficacité énergétique: Activée</string>
     <string name="power_saving_off">Efficacité énergétique: Désactivée</string>
+    <string name="info_power_saving_body">Garde l\'écran allumé pendant une séance au lieu de le laisser s\'éteindre, mais l\'assombrit pour économiser la batterie. Désactivez pour garder la luminosité maximale tout le temps (consomme plus de batterie).</string>
     <string name="use_aod_on">Always On Display: Activé</string>
     <string name="use_aod_off">Always On Display: Désactivé</string>
+    <string name="info_aod_body">Tant que l\'efficacité énergétique est activée, ceci laisse l\'Always On Display propre à la montre gérer l\'écran assombri au lieu que l\'appli le fasse manuellement. Nécessite d\'activer l\'Always On Display dans les réglages système de la montre.</string>
     <string name="dim_brightness_title">Luminosité atténuée</string>
+    <string name="info_dim_brightness_body">À quel point l\'écran s\'assombrit pendant une séance quand l\'efficacité énergétique est activée et que l\'Always On Display n\'est pas utilisé.</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">h</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">Cela écrasera les séances avec des données correspondantes. Action irréversible.</string>
     <string name="import_confirm_ok">Importer</string>
     <string name="import_confirm_cancel">Annuler</string>
+
+    <string name="phone_sync_button">Synchroniser les données</string>
+    <string name="phone_sync_success">Synchronisé, %1$d séances au total</string>
+
+    <string name="clear_data_button">Effacer les données</string>
+    <string name="clear_data_confirm_title">Effacer toutes les données ?</string>
+    <string name="clear_data_confirm_message">Supprime toutes les séances et tous les tirs enregistrés sur cette montre. Cela n\'affecte pas le téléphone — synchronisez ensuite pour restaurer depuis celui-ci. Action irréversible.</string>
+    <string name="clear_data_confirm_ok">Effacer</string>
+    <string name="clear_data_confirm_cancel">Annuler</string>
+    <string name="clear_data_success">Effacé</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">L\'écran restera allumé en mode atténué pendant une séance. Active Always On Display dans les paramètres de la montre pour une meilleure autonomie.</string>

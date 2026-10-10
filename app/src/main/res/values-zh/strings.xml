@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">设置</string>
+    <string name="settings_menu_detection">检测</string>
+    <string name="settings_menu_display">屏幕与电池</string>
+    <string name="settings_menu_appearance_language">外观与语言</string>
+    <string name="info_dialog_dismiss">知道了</string>
+
     <string name="status_ready">就绪</string>
     <string name="status_detecting">检测中</string>
     <string name="status_paused">已暂停</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">中 (13 m/s²)</string>
     <string name="sensitivity_low">低 (20 m/s²)</string>
     <string name="sensitivity_custom">自定义</string>
+    <string name="info_sensitivity_body">戴表手臂的甩动需要多猛才能被记为一箭。数值越大（如20）需要更猛烈的动作，可忽略轻微摆动；数值越小（如8）能捕捉更轻柔的放箭，但也更容易被手臂的随意动作误触发。</string>
 
     <string name="cooldown_title">射击间隔</string>
+    <string name="info_cooldown_body">记录一箭后，下一箭最短需要等待的时间。可防止一次放箭的余振被重复计为两箭。</string>
 
     <string name="lang_section_title">语言</string>
     <string name="lang_system">系统</string>
 
+    <string name="appearance_title">外观</string>
+    <string name="theme_brass">黄铜</string>
+    <string name="theme_forest">森林</string>
+    <string name="theme_target">靶心</string>
+    <string name="theme_steel">钢铁</string>
+    <string name="theme_neon">霓虹</string>
+    <string name="theme_parchment">羊皮纸</string>
+    <string name="counter_size_title">计数器大小</string>
+    <string name="counter_size_small">小</string>
+    <string name="counter_size_medium">中</string>
+    <string name="counter_size_large">大</string>
+
     <string name="series_title">系列</string>
     <string name="series_off">关闭</string>
+    <string name="info_series_body">按此数量将箭数分组为一组（end）。计数器会显示当前组的进度，组满后自动开始下一组。设为「关」则只统计箭数，不分组。</string>
     <string name="auto_pause_title">自动暂停</string>
     <string name="auto_pause_on">自动暂停：开</string>
     <string name="auto_pause_off">自动暂停：关</string>
+    <string name="info_auto_pause_body">完成一组后自动暂停检测一段时间，这样走向箭靶或整理箭支时不会被误记为射箭。随时可用暂停按钮提前恢复。</string>
     <string name="pause_duration_title">暂停时长</string>
 
     <string name="power_saving_title">节能</string>
     <string name="power_saving_on">节能：开</string>
     <string name="power_saving_off">节能：关</string>
+    <string name="info_power_saving_body">让屏幕在训练过程中保持常亮而不休眠，但会调暗亮度以省电。关闭后屏幕将全程保持最高亮度（更耗电）。</string>
     <string name="use_aod_on">Always On Display：开</string>
     <string name="use_aod_off">Always On Display：关</string>
+    <string name="info_aod_body">开启节能后，此选项会让手表自带的常亮显示接管调暗后的屏幕，而不是由应用自行调暗。需要在手表系统设置中开启常亮显示才会生效。</string>
     <string name="dim_brightness_title">调暗亮度</string>
+    <string name="info_dim_brightness_body">开启节能且未使用常亮显示时，训练过程中屏幕会调暗到的亮度。</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">小时</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">这将覆盖数据匹配的训练记录，且无法撤销。</string>
     <string name="import_confirm_ok">导入</string>
     <string name="import_confirm_cancel">取消</string>
+
+    <string name="phone_sync_button">同步数据</string>
+    <string name="phone_sync_success">已同步，共 %1$d 个训练</string>
+
+    <string name="clear_data_button">清除数据</string>
+    <string name="clear_data_confirm_title">清除所有数据？</string>
+    <string name="clear_data_confirm_message">将删除此手表上存储的所有训练和射击记录。不会影响手机 — 之后同步可从手机恢复。此操作无法撤销。</string>
+    <string name="clear_data_confirm_ok">清除</string>
+    <string name="clear_data_confirm_cancel">取消</string>
+    <string name="clear_data_success">已清除</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">训练期间屏幕会保持微暗常亮。建议在手表设置中开启 Always On Display 以获得更长的续航时间。</string>

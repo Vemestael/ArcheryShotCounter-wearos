@@ -44,6 +44,7 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.vemestael.archeryshotcounter.R
 import com.vemestael.archeryshotcounter.presentation.theme.ArcheryShotCounterTheme
+import com.vemestael.archeryshotcounter.presentation.theme.PaletteChoice
 import java.util.Locale
 import java.util.concurrent.Executors
 
@@ -65,6 +66,8 @@ private const val KEY_POWER_SAVING_ENABLED = "power_saving_enabled"
 private const val KEY_USE_SYSTEM_AOD = "use_system_aod"
 private const val KEY_DIM_BRIGHTNESS_PERCENT = "dim_brightness_percent"
 private const val DEFAULT_DIM_BRIGHTNESS_PERCENT = 8
+private const val KEY_PALETTE = "palette"
+private const val KEY_COUNTER_SIZE = "counter_size"
 private const val TAP_BRIGHTEN_DURATION_MS = 5000L
 
 /**
@@ -127,6 +130,8 @@ class MainActivity : ComponentActivity() {
     private var powerSavingEnabled by mutableStateOf(true)
     private var useSystemAod by mutableStateOf(true)
     private var dimBrightnessPercent by mutableIntStateOf(DEFAULT_DIM_BRIGHTNESS_PERCENT)
+    private var paletteChoice by mutableStateOf(PaletteChoice.BRASS)
+    private var counterSize by mutableStateOf(CounterSize.SMALL)
     private var isScreenDimmed = false
     private val brightenHandler = Handler(Looper.getMainLooper())
     private val reDimRunnable = Runnable { dimScreenBrightness() }
@@ -190,6 +195,10 @@ class MainActivity : ComponentActivity() {
         powerSavingEnabled = prefs.getBoolean(KEY_POWER_SAVING_ENABLED, true)
         useSystemAod = prefs.getBoolean(KEY_USE_SYSTEM_AOD, true)
         dimBrightnessPercent = prefs.getInt(KEY_DIM_BRIGHTNESS_PERCENT, DEFAULT_DIM_BRIGHTNESS_PERCENT)
+        paletteChoice = PaletteChoice.entries.find { it.name == prefs.getString(KEY_PALETTE, null) }
+            ?: PaletteChoice.BRASS
+        counterSize = CounterSize.entries.find { it.name == prefs.getString(KEY_COUNTER_SIZE, null) }
+            ?: CounterSize.SMALL
 
         ambientAvailability = detectAmbientAvailability()
         showAodPrompt = ambientAvailability == AmbientAvailability.DISABLED &&
@@ -220,7 +229,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            ArcheryShotCounterTheme {
+            ArcheryShotCounterTheme(palette = paletteChoice.palette) {
                 ArcheryApp(
                     shotCount = shotCount,
                     isDetecting = isDetecting,
@@ -237,6 +246,8 @@ class MainActivity : ComponentActivity() {
                     powerSavingEnabled = powerSavingEnabled,
                     useSystemAod = useSystemAod,
                     dimBrightnessPercent = dimBrightnessPercent,
+                    paletteChoice = paletteChoice,
+                    counterSize = counterSize,
                     autoPauseSecondsLeft = autoPauseSecondsLeft,
                     lastShotMagnitude = lastShotMagnitude,
                     phoneSyncStatus = phoneSyncStatus,
@@ -275,6 +286,16 @@ class MainActivity : ComponentActivity() {
                             .edit { putInt(KEY_SHOT_COOLDOWN_SECONDS, value) }
                     },
                     onLanguageChange = ::changeLanguage,
+                    onThemeChange = { choice ->
+                        paletteChoice = choice
+                        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            .edit { putString(KEY_PALETTE, choice.name) }
+                    },
+                    onCounterSizeChange = { size ->
+                        counterSize = size
+                        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                            .edit { putString(KEY_COUNTER_SIZE, size.name) }
+                    },
                     onEditSession = ::editSession,
                     onDeleteSession = ::deleteSession,
                     detailSession = detailSession,
@@ -754,6 +775,8 @@ fun ArcheryApp(
     powerSavingEnabled: Boolean,
     useSystemAod: Boolean,
     dimBrightnessPercent: Int,
+    paletteChoice: PaletteChoice,
+    counterSize: CounterSize,
     autoPauseSecondsLeft: Int,
     lastShotMagnitude: Float?,
     phoneSyncStatus: String?,
@@ -777,6 +800,8 @@ fun ArcheryApp(
     onCustomThresholdChange: (Int) -> Unit,
     onShotCooldownChange: (Int) -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
+    onThemeChange: (PaletteChoice) -> Unit,
+    onCounterSizeChange: (CounterSize) -> Unit,
     onEditSession: (Session) -> Unit,
     onDeleteSession: (Session) -> Unit,
     onShotsPerEndChange: (Int) -> Unit,
@@ -792,6 +817,12 @@ fun ArcheryApp(
 ) {
     val pagerState = rememberPagerState(initialPage = 1, pageCount = { 3 })
     var showLanguagePicker by remember { mutableStateOf(false) }
+    var showThemePicker by remember { mutableStateOf(false) }
+    var showCounterSizePicker by remember { mutableStateOf(false) }
+    var showDetectionSettings by remember { mutableStateOf(false) }
+    var showDisplaySettings by remember { mutableStateOf(false) }
+    var showAppearanceLanguageSettings by remember { mutableStateOf(false) }
+    var showDataSettings by remember { mutableStateOf(false) }
     AppScaffold {
         if (isAmbient) {
             AmbientScreen(
@@ -832,32 +863,14 @@ fun ArcheryApp(
                         onPrimaryButton = onStartOrToggle,
                         onSecondaryButton = onSecondaryButton,
                         onEnd = onEnd,
-                        onManualAdjust = onManualAdjust
+                        onManualAdjust = onManualAdjust,
+                        counterSize = counterSize
                     )
-                    2 -> SettingsScreen(
-                        sensitivity = sensitivity,
-                        customThreshold = customThreshold,
-                        currentLanguage = currentLanguage,
-                        shotCooldownSeconds = shotCooldownSeconds,
-                        shotsPerEnd = shotsPerEnd,
-                        autoPauseEnabled = autoPauseEnabled,
-                        autoPauseDuration = autoPauseDuration,
-                        powerSavingEnabled = powerSavingEnabled,
-                        useSystemAod = useSystemAod,
-                        dimBrightnessPercent = dimBrightnessPercent,
-                        onSensitivityChange = onSensitivityChange,
-                        onCustomThresholdChange = onCustomThresholdChange,
-                        onShowLanguagePicker = { showLanguagePicker = true },
-                        onShotCooldownChange = onShotCooldownChange,
-                        onShotsPerEndChange = onShotsPerEndChange,
-                        onAutoPauseEnabledChange = onAutoPauseEnabledChange,
-                        onAutoPauseDurationChange = onAutoPauseDurationChange,
-                        onPowerSavingEnabledChange = onPowerSavingEnabledChange,
-                        onUseSystemAodChange = onUseSystemAodChange,
-                        onDimBrightnessPercentChange = onDimBrightnessPercentChange,
-                        phoneSyncStatus = phoneSyncStatus,
-                        onSyncData = onSyncData,
-                        onClearData = onClearData
+                    2 -> SettingsMenuScreen(
+                        onShowDetection = { showDetectionSettings = true },
+                        onShowDisplay = { showDisplaySettings = true },
+                        onShowAppearanceLanguage = { showAppearanceLanguageSettings = true },
+                        onShowData = { showDataSettings = true }
                     )
                 }
             }
@@ -872,6 +885,53 @@ fun ArcheryApp(
                     onDismiss = onDismissDetail
                 )
             }
+            if (showDetectionSettings) {
+                DetectionSettingsScreen(
+                    sensitivity = sensitivity,
+                    customThreshold = customThreshold,
+                    shotCooldownSeconds = shotCooldownSeconds,
+                    shotsPerEnd = shotsPerEnd,
+                    autoPauseEnabled = autoPauseEnabled,
+                    autoPauseDuration = autoPauseDuration,
+                    onSensitivityChange = onSensitivityChange,
+                    onCustomThresholdChange = onCustomThresholdChange,
+                    onShotCooldownChange = onShotCooldownChange,
+                    onShotsPerEndChange = onShotsPerEndChange,
+                    onAutoPauseEnabledChange = onAutoPauseEnabledChange,
+                    onAutoPauseDurationChange = onAutoPauseDurationChange,
+                    onDismiss = { showDetectionSettings = false }
+                )
+            }
+            if (showDisplaySettings) {
+                DisplaySettingsScreen(
+                    powerSavingEnabled = powerSavingEnabled,
+                    useSystemAod = useSystemAod,
+                    dimBrightnessPercent = dimBrightnessPercent,
+                    onPowerSavingEnabledChange = onPowerSavingEnabledChange,
+                    onUseSystemAodChange = onUseSystemAodChange,
+                    onDimBrightnessPercentChange = onDimBrightnessPercentChange,
+                    onDismiss = { showDisplaySettings = false }
+                )
+            }
+            if (showAppearanceLanguageSettings) {
+                AppearanceLanguageSettingsScreen(
+                    currentLanguage = currentLanguage,
+                    paletteChoice = paletteChoice,
+                    counterSize = counterSize,
+                    onShowLanguagePicker = { showLanguagePicker = true },
+                    onShowThemePicker = { showThemePicker = true },
+                    onShowCounterSizePicker = { showCounterSizePicker = true },
+                    onDismiss = { showAppearanceLanguageSettings = false }
+                )
+            }
+            if (showDataSettings) {
+                DataSettingsScreen(
+                    phoneSyncStatus = phoneSyncStatus,
+                    onSyncData = onSyncData,
+                    onClearData = onClearData,
+                    onDismiss = { showDataSettings = false }
+                )
+            }
             if (showLanguagePicker) {
                 LanguagePickerScreen(
                     currentLanguage = currentLanguage,
@@ -880,6 +940,26 @@ fun ArcheryApp(
                         onLanguageChange(lang)
                     },
                     onDismiss = { showLanguagePicker = false }
+                )
+            }
+            if (showThemePicker) {
+                ThemePickerScreen(
+                    currentPalette = paletteChoice,
+                    onSelect = { choice ->
+                        showThemePicker = false
+                        onThemeChange(choice)
+                    },
+                    onDismiss = { showThemePicker = false }
+                )
+            }
+            if (showCounterSizePicker) {
+                CounterSizePickerScreen(
+                    currentSize = counterSize,
+                    onSelect = { size ->
+                        showCounterSizePicker = false
+                        onCounterSizeChange(size)
+                    },
+                    onDismiss = { showCounterSizePicker = false }
                 )
             }
             if (showAodPrompt) {

@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">Настройки</string>
+    <string name="settings_menu_detection">Детекция</string>
+    <string name="settings_menu_display">Экран и батарея</string>
+    <string name="settings_menu_appearance_language">Внешний вид и язык</string>
+    <string name="info_dialog_dismiss">Понятно</string>
+
     <string name="status_ready">Готово</string>
     <string name="status_detecting">Отслеживание</string>
     <string name="status_paused">Пауза</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">Средняя (13 м/с²)</string>
     <string name="sensitivity_low">Низкая (20 м/с²)</string>
     <string name="sensitivity_custom">Свой вариант</string>
+    <string name="info_sensitivity_body">Насколько резким должен быть рывок руки с часами, чтобы он засчитался как выстрел. Большее число (например, 20) требует более резкого движения и игнорирует лёгкие взмахи; меньшее (например, 8) улавливает более мягкие выпуски, но может сработать от случайного движения руки.</string>
 
     <string name="cooldown_title">Задержка между выстрелами</string>
+    <string name="info_cooldown_body">Минимальное время после засчитанного выстрела, прежде чем сможет зарегистрироваться следующий. Не даёт вибрации отдачи одного выстрела засчитаться как два.</string>
 
     <string name="lang_section_title">Язык</string>
     <string name="lang_system">Системный</string>
 
+    <string name="appearance_title">Внешний вид</string>
+    <string name="theme_brass">Латунь</string>
+    <string name="theme_forest">Лес</string>
+    <string name="theme_target">Мишень</string>
+    <string name="theme_steel">Сталь</string>
+    <string name="theme_neon">Неон</string>
+    <string name="theme_parchment">Пергамент</string>
+    <string name="counter_size_title">Размер счётчика</string>
+    <string name="counter_size_small">Маленький</string>
+    <string name="counter_size_medium">Средний</string>
+    <string name="counter_size_large">Крупный</string>
+
     <string name="series_title">Серия</string>
     <string name="series_off">Выкл</string>
+    <string name="info_series_body">Группирует выстрелы в серии такого размера. Счётчик показывает прогресс внутри текущей серии и автоматически начинает новую, когда она заполнена. Поставьте «Выкл», чтобы просто считать выстрелы без группировки.</string>
     <string name="auto_pause_title">Авто-пауза</string>
     <string name="auto_pause_on">Авто-пауза: Вкл</string>
     <string name="auto_pause_off">Авто-пауза: Выкл</string>
+    <string name="info_auto_pause_body">Автоматически приостанавливает отслеживание выстрелов на время после завершения серии, чтобы поход к мишени или работа со стрелами не засчитались как выстрелы. В любой момент можно возобновить раньше кнопкой паузы.</string>
     <string name="pause_duration_title">Длительность паузы</string>
 
     <string name="power_saving_title">Энергоэффективность</string>
     <string name="power_saving_on">Энергоэффективность: Вкл</string>
     <string name="power_saving_off">Энергоэффективность: Выкл</string>
+    <string name="info_power_saving_body">Не даёт экрану засыпать во время сессии, но притушивает его для экономии батареи. Отключите, чтобы экран оставался на полной яркости всё время (расходует больше батареи).</string>
     <string name="use_aod_on">Always On Display: Вкл</string>
     <string name="use_aod_off">Always On Display: Выкл</string>
+    <string name="info_aod_body">Пока включена энергоэффективность, эта настройка позволяет системному Always On Display часов управлять притушенным экраном вместо приложения. Чтобы сработало, нужно включить Always On Display в системных настройках часов.</string>
     <string name="dim_brightness_title">Яркость затемнения</string>
+    <string name="info_dim_brightness_body">Насколько тусклым становится экран во время сессии, когда включена энергоэффективность и не используется Always On Display.</string>
 
     <string name="unit_accel">м/с²</string>
     <string name="time_h">ч</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">Это перезапишет сессии с совпадающими данными. Отменить будет нельзя.</string>
     <string name="import_confirm_ok">Импортировать</string>
     <string name="import_confirm_cancel">Отмена</string>
+
+    <string name="phone_sync_button">Синхронизировать данные</string>
+    <string name="phone_sync_success">Синхронизировано, всего сессий: %1$d</string>
+
+    <string name="clear_data_button">Очистить данные</string>
+    <string name="clear_data_confirm_title">Очистить все данные?</string>
+    <string name="clear_data_confirm_message">Удалит все сессии и выстрелы, сохранённые на часах. На телефон это не повлияет — синхронизируйся после, чтобы восстановить оттуда. Отменить будет нельзя.</string>
+    <string name="clear_data_confirm_ok">Очистить</string>
+    <string name="clear_data_confirm_cancel">Отмена</string>
+    <string name="clear_data_success">Очищено</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">Во время тренировки экран будет оставаться включённым в приглушённом режиме. Включи Always On Display в настройках часов для лучшей автономности.</string>

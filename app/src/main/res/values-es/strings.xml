@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_menu_detection">Detección</string>
+    <string name="settings_menu_display">Pantalla y batería</string>
+    <string name="settings_menu_appearance_language">Apariencia e idioma</string>
+    <string name="info_dialog_dismiss">Entendido</string>
+
     <string name="status_ready">Listo</string>
     <string name="status_detecting">Detectando</string>
     <string name="status_paused">Pausado</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">Media (13 m/s²)</string>
     <string name="sensitivity_low">Baja (20 m/s²)</string>
     <string name="sensitivity_custom">Personalizado</string>
+    <string name="info_sensitivity_body">Qué tan brusco debe ser el tirón del brazo que lleva el reloj para contar como un disparo. Un número más alto (como 20) exige un movimiento más brusco e ignora los movimientos suaves; uno más bajo (como 8) detecta sueltas más suaves, pero puede dispararse por un movimiento aleatorio del brazo.</string>
 
     <string name="cooldown_title">Tiempo entre disparos</string>
+    <string name="info_cooldown_body">El tiempo mínimo después de un disparo contado antes de que pueda registrarse el siguiente. Evita que la vibración residual de una suelta se cuente como dos disparos.</string>
 
     <string name="lang_section_title">Idioma</string>
     <string name="lang_system">Sistema</string>
 
+    <string name="appearance_title">Apariencia</string>
+    <string name="theme_brass">Latón</string>
+    <string name="theme_forest">Bosque</string>
+    <string name="theme_target">Diana</string>
+    <string name="theme_steel">Acero</string>
+    <string name="theme_neon">Neón</string>
+    <string name="theme_parchment">Pergamino</string>
+    <string name="counter_size_title">Tamaño del contador</string>
+    <string name="counter_size_small">Pequeño</string>
+    <string name="counter_size_medium">Mediano</string>
+    <string name="counter_size_large">Grande</string>
+
     <string name="series_title">Serie</string>
     <string name="series_off">Apagado</string>
+    <string name="info_series_body">Agrupa tus disparos en series de este tamaño. El contador muestra el progreso dentro de la serie actual y empieza una nueva automáticamente al completarse. Pon «Apagado» para solo contar disparos sin agrupar.</string>
     <string name="auto_pause_title">Pausa automática</string>
     <string name="auto_pause_on">Pausa automática: Activado</string>
     <string name="auto_pause_off">Pausa automática: Desactivado</string>
+    <string name="info_auto_pause_body">Pausa automáticamente la detección de disparos un rato al terminar una serie, para que caminar hacia el blanco o manejar flechas no se cuente como disparos. Puedes reanudar antes con el botón de pausa.</string>
     <string name="pause_duration_title">Duración de pausa</string>
 
     <string name="power_saving_title">Eficiencia energética</string>
     <string name="power_saving_on">Eficiencia energética: Activado</string>
     <string name="power_saving_off">Eficiencia energética: Desactivado</string>
+    <string name="info_power_saving_body">Mantiene la pantalla encendida durante una sesión en vez de dejarla dormir, pero la atenúa para ahorrar batería. Desactívalo para mantener el brillo máximo todo el tiempo (consume más batería).</string>
     <string name="use_aod_on">Always On Display: Activado</string>
     <string name="use_aod_off">Always On Display: Desactivado</string>
+    <string name="info_aod_body">Mientras la eficiencia energética está activada, esto deja que el Always On Display propio del reloj controle la pantalla atenuada en lugar de que la app la atenúe manualmente. Necesita tener Always On Display activado en los ajustes del sistema del reloj.</string>
     <string name="dim_brightness_title">Brillo atenuado</string>
+    <string name="info_dim_brightness_body">Qué tan tenue se pone la pantalla durante una sesión cuando la eficiencia energética está activada y no se usa Always On Display.</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">h</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">Esto sobrescribirá las sesiones con datos coincidentes. No se puede deshacer.</string>
     <string name="import_confirm_ok">Importar</string>
     <string name="import_confirm_cancel">Cancelar</string>
+
+    <string name="phone_sync_button">Sincronizar datos</string>
+    <string name="phone_sync_success">Sincronizado, %1$d sesiones en total</string>
+
+    <string name="clear_data_button">Borrar datos</string>
+    <string name="clear_data_confirm_title">¿Borrar todos los datos?</string>
+    <string name="clear_data_confirm_message">Elimina todas las sesiones y disparos guardados en este reloj. Esto no afecta al teléfono — sincroniza después para restaurar desde allí. Esto no se puede deshacer.</string>
+    <string name="clear_data_confirm_ok">Borrar</string>
+    <string name="clear_data_confirm_cancel">Cancelar</string>
+    <string name="clear_data_success">Borrado</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">La pantalla permanecerá encendida atenuada durante una sesión. Activa Always On Display en los ajustes del reloj para una mejor duración de batería.</string>

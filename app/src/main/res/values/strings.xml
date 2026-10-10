@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">Settings</string>
+    <string name="settings_menu_detection">Detection</string>
+    <string name="settings_menu_display">Display &amp; battery</string>
+    <string name="settings_menu_appearance_language">Appearance &amp; language</string>
+    <string name="info_dialog_dismiss">Got it</string>
+
     <string name="status_ready">Ready</string>
     <string name="status_detecting">Detecting</string>
     <string name="status_paused">Paused</string>
@@ -22,11 +28,25 @@
     <string name="sensitivity_medium">Medium (13 m/s²)</string>
     <string name="sensitivity_low">Low (20 m/s²)</string>
     <string name="sensitivity_custom">Custom</string>
+    <string name="info_sensitivity_body">How sharp the jerk of the arm wearing the watch needs to be to count as a shot. A higher number (like 20) needs a sharper movement and ignores light swings; a lower number (like 8) catches gentler releases but can misfire from random arm movement.</string>
 
     <string name="cooldown_title">Shot cooldown</string>
+    <string name="info_cooldown_body">The minimum time after a counted shot before the next one can register. Stops a single release\'s follow-through vibration from being counted as two shots.</string>
 
     <string name="lang_section_title">Language</string>
     <string name="lang_system">System</string>
+
+    <string name="appearance_title">Appearance</string>
+    <string name="theme_brass">Brass</string>
+    <string name="theme_forest">Forest</string>
+    <string name="theme_target">Target</string>
+    <string name="theme_steel">Steel</string>
+    <string name="theme_neon">Neon</string>
+    <string name="theme_parchment">Parchment</string>
+    <string name="counter_size_title">Counter size</string>
+    <string name="counter_size_small">Small</string>
+    <string name="counter_size_medium">Medium</string>
+    <string name="counter_size_large">Large</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">h</string>
@@ -35,17 +55,22 @@
 
     <string name="series_title">Series</string>
     <string name="series_off">Off</string>
+    <string name="info_series_body">Groups your shots into ends of this size. The counter shows progress within the current end, and a new one starts automatically once it\'s full. Set to Off to just count shots with no grouping.</string>
     <string name="auto_pause_title">Auto-pause</string>
     <string name="auto_pause_on">Auto-pause: On</string>
     <string name="auto_pause_off">Auto-pause: Off</string>
+    <string name="info_auto_pause_body">Automatically pauses shot detection for a while once you finish an end, so walking to the target or handling arrows doesn\'t get counted as shots. Resume early anytime with the pause button.</string>
     <string name="pause_duration_title">Pause duration</string>
 
     <string name="power_saving_title">Energy efficiency</string>
     <string name="power_saving_on">Energy efficiency: On</string>
     <string name="power_saving_off">Energy efficiency: Off</string>
+    <string name="info_power_saving_body">Keeps the screen on during a session instead of letting it sleep, but dims it to save battery. Turn this off to keep the screen at full brightness the whole time (uses more battery).</string>
     <string name="use_aod_on">Always On Display: On</string>
     <string name="use_aod_off">Always On Display: Off</string>
+    <string name="info_aod_body">While energy efficiency is on, this lets the watch\'s own Always On Display handle the dimmed screen instead of the app dimming it manually. Needs Always On Display enabled in the watch\'s system settings to take effect.</string>
     <string name="dim_brightness_title">Dim brightness</string>
+    <string name="info_dim_brightness_body">How dim the screen gets during a session when energy efficiency is on and Always On Display isn\'t used.</string>
 
     <string name="btn_detail">Details</string>
     <string name="shots_empty">No data</string>

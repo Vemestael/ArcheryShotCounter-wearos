@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Archery Shot Counter</string>
 
+    <string name="settings_title">설정</string>
+    <string name="settings_menu_detection">감지</string>
+    <string name="settings_menu_display">화면 및 배터리</string>
+    <string name="settings_menu_appearance_language">외관 및 언어</string>
+    <string name="info_dialog_dismiss">확인</string>
+
     <string name="status_ready">준비</string>
     <string name="status_detecting">감지 중</string>
     <string name="status_paused">일시 정지</string>
@@ -22,25 +28,44 @@
     <string name="sensitivity_medium">중간 (13 m/s²)</string>
     <string name="sensitivity_low">낮음 (20 m/s²)</string>
     <string name="sensitivity_custom">사용자 지정</string>
+    <string name="info_sensitivity_body">시계를 찬 팔의 움직임이 얼마나 날카로워야 한 발로 카운트되는지를 정합니다. 숫자가 클수록(예: 20) 더 날카로운 움직임이 필요해 가벼운 흔들림은 무시하고, 숫자가 작을수록(예: 8) 더 부드러운 릴리스도 감지하지만 팔의 우발적인 움직임에 오작동할 수 있습니다.</string>
 
     <string name="cooldown_title">발사 간격</string>
+    <string name="info_cooldown_body">한 발이 카운트된 후 다음 발이 등록되기까지 필요한 최소 시간입니다. 릴리스의 잔진동이 두 발로 중복 카운트되는 것을 막아줍니다.</string>
 
     <string name="lang_section_title">언어</string>
     <string name="lang_system">시스템</string>
 
+    <string name="appearance_title">외관</string>
+    <string name="theme_brass">황동</string>
+    <string name="theme_forest">숲</string>
+    <string name="theme_target">과녁</string>
+    <string name="theme_steel">강철</string>
+    <string name="theme_neon">네온</string>
+    <string name="theme_parchment">양피지</string>
+    <string name="counter_size_title">카운터 크기</string>
+    <string name="counter_size_small">작음</string>
+    <string name="counter_size_medium">보통</string>
+    <string name="counter_size_large">큼</string>
+
     <string name="series_title">시리즈</string>
     <string name="series_off">끄기</string>
+    <string name="info_series_body">이 개수만큼 발사를 세트(엔드)로 묶습니다. 카운터는 현재 엔드 내 진행 상황을 보여주고, 다 채워지면 자동으로 새 엔드를 시작합니다. 묶지 않고 그냥 발사 수만 세려면 "끄기"로 설정하세요.</string>
     <string name="auto_pause_title">자동 일시정지</string>
     <string name="auto_pause_on">자동 일시정지: 켜기</string>
     <string name="auto_pause_off">자동 일시정지: 끄기</string>
+    <string name="info_auto_pause_body">한 엔드가 끝나면 잠시 자동으로 감지를 일시정지해서, 과녁으로 걸어가거나 화살을 다루는 동작이 발사로 카운트되지 않게 합니다. 일시정지 버튼으로 언제든 더 일찍 재개할 수 있습니다.</string>
     <string name="pause_duration_title">일시정지 시간</string>
 
     <string name="power_saving_title">절전</string>
     <string name="power_saving_on">절전: 켜기</string>
     <string name="power_saving_off">절전: 끄기</string>
+    <string name="info_power_saving_body">세션 중 화면이 꺼지지 않게 켜두되, 배터리 절약을 위해 어둡게 유지합니다. 끄면 항상 최대 밝기로 유지됩니다(배터리를 더 소모함).</string>
     <string name="use_aod_on">Always On Display: 켜기</string>
     <string name="use_aod_off">Always On Display: 끄기</string>
+    <string name="info_aod_body">절전이 켜져 있는 동안, 이 옵션을 켜면 앱이 직접 어둡게 하는 대신 시계 자체의 Always On Display가 어두운 화면을 담당합니다. 적용하려면 시계 시스템 설정에서 Always On Display를 켜야 합니다.</string>
     <string name="dim_brightness_title">어둡게 할 밝기</string>
+    <string name="info_dim_brightness_body">절전이 켜져 있고 Always On Display를 사용하지 않을 때, 세션 중 화면이 얼마나 어두워지는지를 정합니다.</string>
 
     <string name="unit_accel">m/s²</string>
     <string name="time_h">시간</string>
@@ -63,6 +88,16 @@
     <string name="import_confirm_message">일치하는 세션은 덮어씌워집니다. 되돌릴 수 없습니다.</string>
     <string name="import_confirm_ok">가져오기</string>
     <string name="import_confirm_cancel">취소</string>
+
+    <string name="phone_sync_button">데이터 동기화</string>
+    <string name="phone_sync_success">동기화됨, 총 %1$d개 세션</string>
+
+    <string name="clear_data_button">데이터 지우기</string>
+    <string name="clear_data_confirm_title">모든 데이터를 지울까요?</string>
+    <string name="clear_data_confirm_message">이 시계에 저장된 모든 세션과 샷을 삭제합니다. 휴대폰에는 영향을 주지 않습니다 — 나중에 동기화하면 복원할 수 있습니다. 되돌릴 수 없습니다.</string>
+    <string name="clear_data_confirm_ok">지우기</string>
+    <string name="clear_data_confirm_cancel">취소</string>
+    <string name="clear_data_success">지워짐</string>
 
     <string name="aod_prompt_title">Always On Display</string>
     <string name="aod_prompt_message">세션 중에는 화면이 어둡게 켜진 상태로 유지됩니다. 배터리 수명을 늘리려면 시계 설정에서 Always On Display를 켜세요.</string>
