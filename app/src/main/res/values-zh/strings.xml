@@ -106,11 +106,4 @@
     <string name="clear_data_success">已清除</string>
 
     <string name="aod_prompt_title">Always On Display</string>
-    <string name="aod_prompt_message">训练期间屏幕会保持微暗常亮。建议在手表设置中开启 Always On Display 以获得更长的续航时间。</string>
-    <string name="aod_prompt_open_settings">打开设置</string>
-    <string name="aod_prompt_dismiss">暂不</string>
-    <string name="battery_prompt_title">电池优化</string>
-    <string name="battery_prompt_message">手表可能会在后台使应用休眠，这会导致长时间训练中射击检测停止。请允许它不受限制地运行。</string>
-    <string name="battery_prompt_allow">允许</string>
-    <string name="battery_prompt_dismiss">暂不</string>
 </resources>

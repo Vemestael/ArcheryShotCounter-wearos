@@ -106,11 +106,4 @@
     <string name="clear_data_success">Gelöscht</string>
 
     <string name="aod_prompt_title">Always On Display</string>
-    <string name="aod_prompt_message">Der Bildschirm bleibt während einer Sitzung gedimmt eingeschaltet. Aktiviere Always On Display in den Uhreinstellungen für eine bessere Akkulaufzeit.</string>
-    <string name="aod_prompt_open_settings">Einstellungen öffnen</string>
-    <string name="aod_prompt_dismiss">Nicht jetzt</string>
-    <string name="battery_prompt_title">Akku-Optimierung</string>
-    <string name="battery_prompt_message">Die Uhr kann die App im Hintergrund in den Ruhezustand versetzen, was die Schusserkennung bei langen Sitzungen stoppen kann. Erlaube uneingeschränkte Ausführung.</string>
-    <string name="battery_prompt_allow">Zulassen</string>
-    <string name="battery_prompt_dismiss">Nicht jetzt</string>
 </resources>

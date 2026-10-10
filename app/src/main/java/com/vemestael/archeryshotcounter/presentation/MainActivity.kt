@@ -1,16 +1,13 @@
 package com.vemestael.archeryshotcounter.presentation
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.hardware.SensorManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -60,8 +57,6 @@ private const val KEY_SHOT_COOLDOWN_SECONDS = "shot_cooldown_seconds"
 private const val KEY_SHOTS_PER_END = "shots_per_end"
 private const val KEY_AUTO_PAUSE_ENABLED = "auto_pause_enabled"
 private const val KEY_AUTO_PAUSE_DURATION = "auto_pause_duration"
-private const val KEY_AOD_PROMPT_DISMISSED = "aod_prompt_dismissed"
-private const val KEY_BATTERY_PROMPT_DISMISSED = "battery_prompt_dismissed"
 private const val KEY_POWER_SAVING_ENABLED = "power_saving_enabled"
 private const val KEY_USE_SYSTEM_AOD = "use_system_aod"
 private const val KEY_DIM_BRIGHTNESS_PERCENT = "dim_brightness_percent"
@@ -126,8 +121,6 @@ class MainActivity : ComponentActivity() {
     private var showClearDataConfirm by mutableStateOf(false)
 
     private var ambientAvailability = AmbientAvailability.UNKNOWN
-    private var showAodPrompt by mutableStateOf(false)
-    private var showBatteryPrompt by mutableStateOf(false)
 
     private var powerSavingEnabled by mutableStateOf(true)
     private var useSystemAod by mutableStateOf(true)
@@ -203,10 +196,6 @@ class MainActivity : ComponentActivity() {
             ?: CounterSize.SMALL
 
         ambientAvailability = detectAmbientAvailability()
-        showAodPrompt = ambientAvailability == AmbientAvailability.DISABLED &&
-            !prefs.getBoolean(KEY_AOD_PROMPT_DISMISSED, false)
-        showBatteryPrompt = !isIgnoringBatteryOptimizations() &&
-            !prefs.getBoolean(KEY_BATTERY_PROMPT_DISMISSED, false)
 
         dbExecutor.execute {
             if (database.sessionDao().getAll().isEmpty()) {
@@ -259,12 +248,6 @@ class MainActivity : ComponentActivity() {
                     onClearData = ::startClearData,
                     onConfirmClearData = ::confirmClearData,
                     onCancelClearData = ::cancelClearData,
-                    showAodPrompt = showAodPrompt,
-                    onOpenDisplaySettings = { dismissAodPrompt(openSettings = true) },
-                    onDismissAodPrompt = { dismissAodPrompt(openSettings = false) },
-                    showBatteryPrompt = showBatteryPrompt,
-                    onAllowBatteryExemption = { dismissBatteryPrompt(requestExemption = true) },
-                    onDismissBatteryPrompt = { dismissBatteryPrompt(requestExemption = false) },
                     onStartOrToggle = ::onPrimaryButton,
                     onSecondaryButton = ::onSecondaryButton,
                     onEnd = ::endSession,
@@ -334,13 +317,15 @@ class MainActivity : ComponentActivity() {
                         powerSavingEnabled = enabled
                         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                             .edit { putBoolean(KEY_POWER_SAVING_ENABLED, enabled) }
-                        if (isDetecting || autoPauseSecondsLeft >= 0) applyScreenPowerMode()
+                        if (isDetecting) applyTrackingScreenMode() else if (isPaused()) applyScreenPowerMode()
                     },
                     onUseSystemAodChange = { enabled ->
                         useSystemAod = enabled
                         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                             .edit { putBoolean(KEY_USE_SYSTEM_AOD, enabled) }
-                        if (isDetecting || autoPauseSecondsLeft >= 0) applyScreenPowerMode()
+                        // Never consulted while detecting — tracking always uses the manual dim
+                        // fallback, never real system Ambient Mode.
+                        if (isPaused()) applyScreenPowerMode()
                     },
                     onDimBrightnessPercentChange = { value ->
                         dimBrightnessPercent = value
@@ -363,35 +348,27 @@ class MainActivity : ComponentActivity() {
             AmbientAvailability.UNKNOWN
         }
 
-    private fun dismissAodPrompt(openSettings: Boolean) {
-        showAodPrompt = false
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit { putBoolean(KEY_AOD_PROMPT_DISMISSED, true) }
-        if (openSettings) startActivity(Intent(Settings.ACTION_DISPLAY_SETTINGS))
-    }
+    /** Paused (manually or via auto-pause) with a session still open — the only state real
+     * system Ambient Mode is allowed to engage in, since it can make live shot detection stall. */
+    private fun isPaused(): Boolean = autoPauseSecondsLeft >= 0 || (currentSession != null && !isDetecting)
 
-    /** Doze/App Standby exemption is separate from Ambient Mode: even with the screen genuinely
-     * dimmed via system AOD, the OS can still suspend the CPU and defer background work like our
-     * cooldown re-registration alarm unless the app is whitelisted. Some OEM skins (Samsung's
-     * "Put unused apps to sleep" in Device Care, for one) restrict background apps on top of and
-     * separately from this stock-Android mechanism, with no programmatic opt-out — if detection
-     * still stalls in ambient after granting this, that OEM-level list is the next place to check. */
-    private fun isIgnoringBatteryOptimizations(): Boolean {
-        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        return powerManager.isIgnoringBatteryOptimizations(packageName)
-    }
-
-    private fun dismissBatteryPrompt(requestExemption: Boolean) {
-        showBatteryPrompt = false
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit { putBoolean(KEY_BATTERY_PROMPT_DISMISSED, true) }
-        if (requestExemption) {
-            startActivity(
-                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName"))
-            )
+    /** Dims the screen while tracking if energy efficiency is on, same as [applyScreenPowerMode]'s
+     * manual fallback — but never hands off to real system Ambient Mode, since that can make the
+     * sensor stall mid-session. This is the only power-saving path allowed during live detection. */
+    private fun applyTrackingScreenMode() {
+        brightenHandler.removeCallbacks(reDimRunnable)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (powerSavingEnabled) {
+            dimScreenBrightness()
+        } else {
+            isScreenDimmed = false
+            window.attributes = window.attributes.also { it.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE }
         }
     }
 
     /** Forces a dimmed always-on screen when energy efficiency is on and the system doesn't
-     * offer (or the user opted out of) working Ambient Mode. */
+     * offer (or the user opted out of) working Ambient Mode. Only used while paused — real
+     * system Ambient Mode is safe here since nothing is actively sensing shots. */
     private fun applyScreenPowerMode() {
         brightenHandler.removeCallbacks(reDimRunnable)
         if (!powerSavingEnabled) {
@@ -402,6 +379,7 @@ class MainActivity : ComponentActivity() {
         }
         if (useSystemAod && ambientAvailability == AmbientAvailability.ENABLED) {
             isScreenDimmed = false
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             return
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -487,7 +465,7 @@ class MainActivity : ComponentActivity() {
                 startDetection()
             }
             autoPauseSecondsLeft >= 0 -> { cancelAutoPause(); startDetection(); shotDetector.resetCooldown() }
-            isDetecting -> stopDetection()
+            isDetecting -> { stopDetection(); applyScreenPowerMode() }
             else -> startDetection()
         }
     }
@@ -502,7 +480,7 @@ class MainActivity : ComponentActivity() {
         shotDetector.cooldownMs = shotCooldownSeconds * 1000L
         shotDetector.start()
         isDetecting = true
-        applyScreenPowerMode()
+        applyTrackingScreenMode()
     }
 
     private fun stopDetection() {
@@ -812,12 +790,6 @@ fun ArcheryApp(
     onClearData: () -> Unit,
     onConfirmClearData: () -> Unit,
     onCancelClearData: () -> Unit,
-    showAodPrompt: Boolean,
-    onOpenDisplaySettings: () -> Unit,
-    onDismissAodPrompt: () -> Unit,
-    showBatteryPrompt: Boolean,
-    onAllowBatteryExemption: () -> Unit,
-    onDismissBatteryPrompt: () -> Unit,
     onStartOrToggle: () -> Unit,
     onSecondaryButton: () -> Unit,
     onEnd: () -> Unit,
@@ -1002,17 +974,6 @@ fun ArcheryApp(
                         onCounterSizeChange(size)
                     },
                     onDismiss = { showCounterSizePicker = false }
-                )
-            }
-            if (showAodPrompt) {
-                AodPromptDialog(
-                    onOpenSettings = onOpenDisplaySettings,
-                    onDismiss = onDismissAodPrompt
-                )
-            } else if (showBatteryPrompt) {
-                BatteryPromptDialog(
-                    onOpenSettings = onAllowBatteryExemption,
-                    onDismiss = onDismissBatteryPrompt
                 )
             }
             if (showClearDataConfirm) {

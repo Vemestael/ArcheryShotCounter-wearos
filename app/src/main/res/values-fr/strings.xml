@@ -106,11 +106,4 @@
     <string name="clear_data_success">Effacé</string>
 
     <string name="aod_prompt_title">Always On Display</string>
-    <string name="aod_prompt_message">L\'écran restera allumé en mode atténué pendant une séance. Active Always On Display dans les paramètres de la montre pour une meilleure autonomie.</string>
-    <string name="aod_prompt_open_settings">Ouvrir les paramètres</string>
-    <string name="aod_prompt_dismiss">Pas maintenant</string>
-    <string name="battery_prompt_title">Optimisation de la batterie</string>
-    <string name="battery_prompt_message">La montre peut mettre l\'application en veille en arrière-plan, ce qui peut arrêter la détection des tirs lors de longues sessions. Autorise-la à s\'exécuter sans restriction.</string>
-    <string name="battery_prompt_allow">Autoriser</string>
-    <string name="battery_prompt_dismiss">Pas maintenant</string>
 </resources>

@@ -106,11 +106,4 @@
     <string name="clear_data_success">Cleared</string>
 
     <string name="aod_prompt_title">Always On Display</string>
-    <string name="aod_prompt_message">The screen will stay on dimmed during a session. Enable Always On Display in watch settings for better battery life.</string>
-    <string name="aod_prompt_open_settings">Open settings</string>
-    <string name="aod_prompt_dismiss">Not now</string>
-    <string name="battery_prompt_title">Battery optimization</string>
-    <string name="battery_prompt_message">This watch may put the app to sleep in the background, which can stop shot detection during long sessions. Allow it to run without restrictions.</string>
-    <string name="battery_prompt_allow">Allow</string>
-    <string name="battery_prompt_dismiss">Not now</string>
 </resources>

@@ -507,8 +507,8 @@ fun ListBottomSpacer(height: Dp = 16.dp) {
 
 /**
  * The rounded, scrollable card every watch dialog opens: clipped corners, elevated background,
- * centered content with consistent vertical spacing. Used by the Aod/Battery prompts, the clear-data
- * confirmation, and the history edit dialog.
+ * centered content with consistent vertical spacing. Used by the clear-data confirmation and
+ * other small popups.
  */
 @Composable
 fun AppDialog(

@@ -106,11 +106,4 @@
     <string name="clear_data_success">Borrado</string>
 
     <string name="aod_prompt_title">Always On Display</string>
-    <string name="aod_prompt_message">La pantalla permanecerá encendida atenuada durante una sesión. Activa Always On Display en los ajustes del reloj para una mejor duración de batería.</string>
-    <string name="aod_prompt_open_settings">Abrir ajustes</string>
-    <string name="aod_prompt_dismiss">Ahora no</string>
-    <string name="battery_prompt_title">Optimización de batería</string>
-    <string name="battery_prompt_message">El reloj puede poner la app en reposo en segundo plano, lo que puede detener la detección de disparos en sesiones largas. Permite que se ejecute sin restricciones.</string>
-    <string name="battery_prompt_allow">Permitir</string>
-    <string name="battery_prompt_dismiss">Ahora no</string>
 </resources>
