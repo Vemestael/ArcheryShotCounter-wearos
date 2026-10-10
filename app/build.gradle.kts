@@ -37,6 +37,13 @@ android {
         }
     }
 
+    // "debug"/"release" (buildTypes, below) controls signing + minification only — optimized and
+    // production-signed, or unoptimized and debug-signed. Whether the app installs *alongside* the
+    // production one is a separate question, answered by the flavor dimension further down. Keeping
+    // these two axes apart (they used to be conflated: applicationIdSuffix lived inside the "debug"
+    // buildType, so "side-by-side install" and "debug-signed/unoptimized" looked like the same
+    // thing) is what lets `local` + `release` exist: a production-signed, optimized build that still
+    // installs next to the Play release for testing.
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -47,9 +54,25 @@ android {
             )
         }
         debug {
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
-            resValue("string", "app_name", "Archery Shot Counter Debug")
+            // No applicationIdSuffix here — see the flavor dimension below.
+        }
+    }
+
+    flavorDimensions += "install"
+    productFlavors {
+        // The Play-distributed shape: no suffix, same applicationId as the production app. This
+        // is what `store` + `release` assembles into the AAB/APK that actually gets uploaded.
+        create("store") {
+            dimension = "install"
+        }
+        // Installs side by side with the production app (own applicationId, own data) for local
+        // testing, whether or not it's also debug-signed/unoptimized — that's the `debug`/`release`
+        // buildType's call, independent of this flavor.
+        create("local") {
+            dimension = "install"
+            applicationIdSuffix = ".local"
+            versionNameSuffix = "-local"
+            resValue("string", "app_name", "Archery Shot Counter (Local)")
         }
     }
     compileOptions {
