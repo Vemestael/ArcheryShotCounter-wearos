@@ -23,8 +23,8 @@ android {
         applicationId = "com.vemestael.archeryshotcounter"
         minSdk = 30
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.5"
+        versionCode = 8
+        versionName = "1.6"
 
     }
 
