@@ -1,24 +1,32 @@
 # Archery Shot Counter
 
-A WearOS app for archers that automatically counts shots using the wrist accelerometer — no buttons needed during shooting. Works with any bow style (compound, Olympic recurve, barebow, traditional) and on either wrist — just tune the sensitivity to match your setup.
+![Archery Shot Counter](assets/banner.png)
+
+A Wear OS app for archers that automatically counts shots using the wrist accelerometer — no buttons needed during shooting. Works with any bow style (compound, Olympic recurve, barebow, traditional) and on either wrist — just tune the sensitivity to match your setup.
+
+Part of the [Archery Shot Counter](https://github.com/Vemestael/ArcheryShotCounter) project. Pair it with the [phone companion](https://github.com/Vemestael/ArcheryShotCounter-android) to browse, edit and back up your history from your phone.
 
 ## Screenshots
 
-<img src="assets/history.png" width="200" alt="Session history"> <img src="assets/main.png" width="200" alt="Main screen"> <img src="assets/settings.png" width="200" alt="Settings">
+<img src="assets/main.png" width="180" alt="Counting shots"> <img src="assets/history.png" width="180" alt="Session history"> <img src="assets/shots.png" width="180" alt="Per-shot detail"> <img src="assets/themes.png" width="180" alt="Theme picker">
 
 ## Features
 
-- **Automatic shot detection** — detects the recoil impulse of a bow release via the wrist accelerometer
-- **Manual adjustment** — tap +/− to correct the count if needed
+- **Automatic shot detection** — detects the recoil impulse of a bow release via the wrist accelerometer; the watch vibrates on every counted shot
+- **Manual adjustment** — tap −/+ to correct the count if needed
 - **Session tracking** — start, pause, resume and end training sessions
-- **Session history** — browse past sessions with date, time range, shot count and duration
-- **Per-shot detail** — see the timestamp and impact strength of every recorded shot in a session
-- **Adjustable sensitivity** — High / Medium / Low / Custom threshold
-- **Configurable shot cooldown** — tune the dead time between shots to avoid false triggers
-- **Shots per end** — optional series markers with auto-pause between ends
-- **Ambient Mode** — dims the screen during a session instead of staying at full brightness, on watches with Always-On Display; falls back to a manually dimmed screen otherwise
-- **Export / import training data** — back up and restore your sessions as a JSON file (see [Data export/import](#data-exportimport) below)
+- **Ends (series)** — set shots per end; the counter shows your progress through the current end
+- **Auto-pause** — optionally pauses detection for a set time after each end, so walking to the target isn't counted
+- **Adjustable sensitivity** — High / Medium / Low presets or a custom threshold, plus a configurable cooldown between shots
+- **Session history** — date, time range, duration and shot count for every session
+- **Per-shot detail** — the timestamp and impact strength of every recorded shot
+- **Session editing** — fix start/end time, shot count or shots per end right on the watch
+- **Phone companion sync** — sessions sync to the [phone app](https://github.com/Vemestael/ArcheryShotCounter-android) live, and edits made on the phone show up on the watch
+- **Energy efficiency** — keeps the screen on but dimmed while counting, and can hand over to the watch's Always On Display while paused
+- **Six colour themes** (Brass, Forest, Target, Steel, Neon, Parchment) and three counter sizes
+- **Backup via the phone** — sessions sync to the phone companion, which exports and imports them as JSON or CSV (see [Backing up your data](#backing-up-your-data) below)
 - **12 interface languages** — English, Russian, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, Arabic, Turkish and Hindi
+- **No internet access** — no `INTERNET` permission, no accounts; your data stays on your devices
 
 ## Requirements
 
@@ -61,23 +69,15 @@ The app listens to `TYPE_LINEAR_ACCELERATION` (gravity-compensated) sensor data.
 
 The optimal sensitivity depends on your bow style and which wrist you wear the watch on — the bow arm typically produces a stronger impulse than the string arm. Use the Custom threshold if the presets don't work well for your setup.
 
-## Data export/import
+## Backing up your data
 
-Settings → Data. Wear OS has no general-purpose file picker, so export and import don't use a "Save As" dialog — they read/write a fixed file under the app's own external storage instead:
-
-```bash
-# Export: tap "Export data" in the app, then pull the file it reports
-adb pull /storage/emulated/0/Android/data/com.vemestael.archeryshotcounter/files/archery-export-<timestamp>.json
-
-# Import: push a file named exactly archery-import.json to the same folder, then tap "Import data"
-adb push archery-export-<timestamp>.json /storage/emulated/0/Android/data/com.vemestael.archeryshotcounter/files/archery-import.json
-```
+The watch app has no export of its own. To keep a copy of your history, sync it to the [phone companion](https://github.com/Vemestael/ArcheryShotCounter-android) (Settings → Data → Sync data on the watch, or pull-to-refresh on the phone) and use Export there — JSON or CSV. Importing a backup on the phone and syncing brings the sessions back to the watch.
 
 ## Building from source
 
 ```bash
 git clone https://github.com/Vemestael/ArcheryShotCounter-wearos.git
-cd ArcheryShotCounter
+cd ArcheryShotCounter-wearos
 ./gradlew assembleDebug
 ```
 
